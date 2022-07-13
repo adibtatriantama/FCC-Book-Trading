@@ -1,0 +1,23 @@
+interface IUseCaseError {
+  message: string;
+}
+
+export abstract class UseCaseError implements IUseCaseError {
+  public readonly message: string;
+
+  constructor(message: string) {
+    this.message = message;
+  }
+}
+
+export class UnexpectedError extends UseCaseError {
+  constructor() {
+    super(`Unexpected error`);
+  }
+}
+
+export class EntityNotFoundError extends UseCaseError {
+  constructor() {
+    super('Entity is not found');
+  }
+}

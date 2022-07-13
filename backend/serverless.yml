@@ -1,0 +1,20 @@
+org: adibtatriantama
+app: book-trading
+service: book-trading
+useDotenv: true
+
+plugins:
+  - serverless-esbuild
+  - serverless-offline
+  - serverless-dynamodb-local
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: ap-southeast-1
+  stage: dev
+
+  httpApi:
+    cors:
+      allowedOrigins:
+        - https://adibta-fcc-book-trading.vercel.app
