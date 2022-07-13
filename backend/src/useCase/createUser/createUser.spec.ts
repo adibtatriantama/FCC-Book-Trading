@@ -25,7 +25,7 @@ afterEach(() => {
 describe('CreateUser', () => {
   beforeEach(() => {
     mockUserRepo = {
-      findOneById: jest.fn().mockResolvedValue(Result.fail(NOT_FOUND)),
+      findById: jest.fn().mockResolvedValue(Result.fail(NOT_FOUND)),
       save: jest.fn().mockResolvedValue(Result.ok()),
     };
     useCase = new CreateUser(mockUserRepo);
@@ -51,7 +51,7 @@ describe('CreateUser', () => {
   describe('when user with same id already exist', () => {
     beforeEach(() => {
       mockUserRepo = {
-        findOneById: jest.fn().mockResolvedValue(Result.ok(dummyUser)),
+        findById: jest.fn().mockResolvedValue(Result.ok(dummyUser)),
         save: jest.fn(),
       };
       useCase = new CreateUser(mockUserRepo);
@@ -74,7 +74,7 @@ describe('CreateUser', () => {
   describe('when unable to save', () => {
     beforeEach(() => {
       mockUserRepo = {
-        findOneById: jest.fn().mockResolvedValue(Result.fail(NOT_FOUND)),
+        findById: jest.fn().mockResolvedValue(Result.fail(NOT_FOUND)),
         save: jest.fn().mockResolvedValue(Result.fail(NOT_FOUND)),
       };
       useCase = new CreateUser(mockUserRepo);
@@ -91,7 +91,7 @@ describe('CreateUser', () => {
   describe('when unable to check if user with same id is already exist', () => {
     beforeEach(() => {
       mockUserRepo = {
-        findOneById: jest.fn().mockResolvedValue(Result.fail('other error')),
+        findById: jest.fn().mockResolvedValue(Result.fail('other error')),
         save: jest.fn(),
       };
       useCase = new CreateUser(mockUserRepo);

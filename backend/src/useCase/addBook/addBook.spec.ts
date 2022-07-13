@@ -37,7 +37,7 @@ const buildMockBookRepo = (params?: Partial<BookRepo>) => {
 
 const buildMockUserRepo = (params?: Partial<UserRepo>) => {
   return {
-    findOneById: params?.findOneById ?? jest.fn(),
+    findById: params?.findById ?? jest.fn(),
     save: params?.save ?? jest.fn(),
   };
 };
@@ -48,7 +48,7 @@ describe('AddBook', () => {
       save: jest.fn().mockResolvedValue(Result.ok(dummyBook)),
     });
     mockUserRepo = buildMockUserRepo({
-      findOneById: jest.fn().mockResolvedValue(Result.ok(dummyUser)),
+      findById: jest.fn().mockResolvedValue(Result.ok(dummyUser)),
     });
 
     useCase = new AddBook(mockBookRepo, mockUserRepo);
@@ -73,7 +73,7 @@ describe('AddBook', () => {
         save: jest.fn().mockResolvedValue(Result.fail('error')),
       });
       mockUserRepo = buildMockUserRepo({
-        findOneById: jest.fn().mockResolvedValue(Result.ok(dummyUser)),
+        findById: jest.fn().mockResolvedValue(Result.ok(dummyUser)),
       });
 
       useCase = new AddBook(mockBookRepo, mockUserRepo);
@@ -94,7 +94,7 @@ describe('AddBook', () => {
       });
 
       mockUserRepo = buildMockUserRepo({
-        findOneById: jest.fn().mockResolvedValue(Result.fail('any')),
+        findById: jest.fn().mockResolvedValue(Result.fail('any')),
       });
 
       useCase = new AddBook(mockBookRepo, mockUserRepo);

@@ -18,7 +18,7 @@ export class AddBook implements UseCase<AddBookRequest, AddBookResponse> {
   ) {}
 
   async execute(request: AddBookRequest): Promise<AddBookResponse> {
-    const getUserResult = await this.userRepo.findOneById(request.ownerId);
+    const getUserResult = await this.userRepo.findById(request.ownerId);
 
     if (getUserResult.isFailure) {
       return left(new UnexpectedError());
