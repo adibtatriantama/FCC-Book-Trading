@@ -114,7 +114,7 @@ describe('Reject Trade', () => {
       useCase = new RejectTrade(mockTradeRepo);
     });
 
-    it('should return UnableToAcceptTradeError', async () => {
+    it('should return UnableToRejectTradeError', async () => {
       const response = await useCase.execute(request);
 
       expect(response.isLeft()).toBe(true);
@@ -156,7 +156,7 @@ describe('Reject Trade', () => {
     });
   });
 
-  describe("when user doesnt't own the trade", () => {
+  describe("when user isn't the books owner", () => {
     beforeEach(() => {
       dummyTrade = Trade.create({
         owner: somebodyElse,
@@ -174,7 +174,7 @@ describe('Reject Trade', () => {
       useCase = new RejectTrade(mockTradeRepo);
     });
 
-    it('should return UnableToAcceptTradeError', async () => {
+    it('should return UnableToRejectTradeError', async () => {
       const response = await useCase.execute(request);
 
       expect(response.isLeft()).toBe(true);

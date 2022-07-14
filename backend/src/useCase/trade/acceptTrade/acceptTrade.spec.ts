@@ -156,7 +156,7 @@ describe('Accept Trade', () => {
     });
   });
 
-  describe("when user doesnt't own the trade", () => {
+  describe("when user isn't the books owner", () => {
     beforeEach(() => {
       dummyTrade = Trade.create({
         owner: somebodyElse,
