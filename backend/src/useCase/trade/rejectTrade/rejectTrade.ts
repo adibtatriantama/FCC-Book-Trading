@@ -44,7 +44,7 @@ export class RejectTrade
 
     if (trade.owner.id !== request.userId) {
       return left(
-        new UnableToRejectTradeError('You are not the owner of this trade'),
+        new UnableToRejectTradeError('You are not the owner of the books'),
       );
     }
 
