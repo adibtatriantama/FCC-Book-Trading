@@ -29,12 +29,20 @@ const dummyUser = User.create(
   'testerId',
 );
 
+const buildMockUserRepo = (params?: Partial<UserRepo>) => {
+  return {
+    findById: params?.findById ?? jest.fn(),
+    batchFindById: params?.batchFindById ?? jest.fn(),
+    save: params?.save ?? jest.fn(),
+  };
+};
+
 describe('UpdateUser', () => {
   beforeEach(() => {
-    mockUserRepo = {
+    mockUserRepo = buildMockUserRepo({
       findById: jest.fn().mockResolvedValue(Result.ok(dummyUser)),
       save: jest.fn().mockResolvedValue(Result.ok()),
-    };
+    });
     useCase = new UpdateUser(mockUserRepo);
   });
 
@@ -53,10 +61,10 @@ describe('UpdateUser', () => {
 
   describe('when user is not found', () => {
     beforeEach(() => {
-      mockUserRepo = {
+      mockUserRepo = buildMockUserRepo({
         findById: jest.fn().mockResolvedValue(Result.fail(NOT_FOUND)),
         save: jest.fn(),
-      };
+      });
       useCase = new UpdateUser(mockUserRepo);
     });
 
@@ -70,10 +78,10 @@ describe('UpdateUser', () => {
 
   describe('when unable to save', () => {
     beforeEach(() => {
-      mockUserRepo = {
+      mockUserRepo = buildMockUserRepo({
         findById: jest.fn().mockResolvedValue(Result.ok(dummyUser)),
         save: jest.fn().mockResolvedValue(Result.fail(NOT_FOUND)),
-      };
+      });
       useCase = new UpdateUser(mockUserRepo);
     });
 
@@ -87,10 +95,10 @@ describe('UpdateUser', () => {
 
   describe('when unable to check if user with same id is already exist', () => {
     beforeEach(() => {
-      mockUserRepo = {
+      mockUserRepo = buildMockUserRepo({
         findById: jest.fn().mockResolvedValue(Result.fail('other error')),
         save: jest.fn(),
-      };
+      });
       useCase = new UpdateUser(mockUserRepo);
     });
 

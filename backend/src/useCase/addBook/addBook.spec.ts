@@ -32,12 +32,15 @@ const dummyRequest: AddBookRequest = {
 const buildMockBookRepo = (params?: Partial<BookRepo>) => {
   return {
     save: params?.save ?? jest.fn(),
+    findById: params?.findById ?? jest.fn(),
+    batchFindById: params?.batchFindById ?? jest.fn(),
   };
 };
 
 const buildMockUserRepo = (params?: Partial<UserRepo>) => {
   return {
     findById: params?.findById ?? jest.fn(),
+    batchFindById: params?.batchFindById ?? jest.fn(),
     save: params?.save ?? jest.fn(),
   };
 };

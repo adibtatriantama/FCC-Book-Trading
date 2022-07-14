@@ -18,16 +18,24 @@ const dummyUser = User.create(
   'testerId',
 );
 
+const buildMockUserRepo = (params?: Partial<UserRepo>) => {
+  return {
+    findById: params?.findById ?? jest.fn(),
+    batchFindById: params?.batchFindById ?? jest.fn(),
+    save: params?.save ?? jest.fn(),
+  };
+};
+
 afterEach(() => {
   jest.clearAllMocks();
 });
 
 describe('CreateUser', () => {
   beforeEach(() => {
-    mockUserRepo = {
+    mockUserRepo = buildMockUserRepo({
       findById: jest.fn().mockResolvedValue(Result.fail(NOT_FOUND)),
       save: jest.fn().mockResolvedValue(Result.ok()),
-    };
+    });
     useCase = new CreateUser(mockUserRepo);
   });
 
@@ -50,10 +58,10 @@ describe('CreateUser', () => {
 
   describe('when user with same id already exist', () => {
     beforeEach(() => {
-      mockUserRepo = {
+      mockUserRepo = buildMockUserRepo({
         findById: jest.fn().mockResolvedValue(Result.ok(dummyUser)),
         save: jest.fn(),
-      };
+      });
       useCase = new CreateUser(mockUserRepo);
     });
 
@@ -73,10 +81,10 @@ describe('CreateUser', () => {
 
   describe('when unable to save', () => {
     beforeEach(() => {
-      mockUserRepo = {
+      mockUserRepo = buildMockUserRepo({
         findById: jest.fn().mockResolvedValue(Result.fail(NOT_FOUND)),
         save: jest.fn().mockResolvedValue(Result.fail(NOT_FOUND)),
-      };
+      });
       useCase = new CreateUser(mockUserRepo);
     });
 
@@ -90,10 +98,10 @@ describe('CreateUser', () => {
 
   describe('when unable to check if user with same id is already exist', () => {
     beforeEach(() => {
-      mockUserRepo = {
+      mockUserRepo = buildMockUserRepo({
         findById: jest.fn().mockResolvedValue(Result.fail('other error')),
         save: jest.fn(),
-      };
+      });
       useCase = new CreateUser(mockUserRepo);
     });
 
