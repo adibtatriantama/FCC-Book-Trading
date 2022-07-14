@@ -155,6 +155,32 @@ describe('Accept Trade', () => {
     });
   });
 
+  describe("when user doesnt't own the trade", () => {
+    beforeEach(() => {
+      dummyTrade = Trade.create({
+        owner: somebodyElse,
+        trader: dummyTrader,
+        ownerBooks: [dummyBook1],
+        traderBooks: [dummyBook2],
+        status: 'pending',
+      }).getValue();
+
+      mockTradeRepo = buildMockTradeRepo({
+        save: jest.fn().mockResolvedValue(Result.ok(dummyTrade)),
+        findById: jest.fn().mockResolvedValue(Result.ok(dummyTrade)),
+      });
+
+      useCase = new AcceptTrade(mockTradeRepo);
+    });
+
+    it('should return UnableToAcceptTradeError', async () => {
+      const response = await useCase.execute(request);
+
+      expect(response.isLeft()).toBe(true);
+      expect(response.value).toBeInstanceOf(UnableToAcceptTradeError);
+    });
+  });
+
   describe('when unable to save', () => {
     beforeEach(() => {
       mockTradeRepo = buildMockTradeRepo({

@@ -42,6 +42,12 @@ export class AcceptTrade
 
     const trade = getTradeResult.getValue();
 
+    if (trade.owner.id !== request.userId) {
+      return left(
+        new UnableToAcceptTradeError('You are not the owner of this trade'),
+      );
+    }
+
     const acceptResult = trade.accept();
 
     if (acceptResult.isFailure) {
