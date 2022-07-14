@@ -23,7 +23,7 @@ export class UpdateUser
   constructor(private readonly userRepo: UserRepo) {}
 
   async execute(request: UpdateUserRequest): Promise<UpdateUserResponse> {
-    const findExistingUserResult = await this.userRepo.findOneById(request.id);
+    const findExistingUserResult = await this.userRepo.findById(request.id);
 
     if (findExistingUserResult.isFailure) {
       switch (findExistingUserResult.getErrorValue()) {

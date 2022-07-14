@@ -27,7 +27,7 @@ export class CreateUser
   constructor(private readonly userRepo: UserRepo) {}
 
   async execute(request: CreateUserRequest): Promise<CreateUserResponse> {
-    const findExistingUserResult = await this.userRepo.findOneById(request.id);
+    const findExistingUserResult = await this.userRepo.findById(request.id);
 
     if (findExistingUserResult.isSuccess) {
       return left(new UserAlreadyExist());
