@@ -3,6 +3,7 @@ import { User } from 'src/domain/user';
 
 export interface UserRepo {
   findById(userId: string): Promise<Result<User>>;
+  batchFindById(userIds: string[]): Promise<Result<User[]>>;
 
   save(user: User): Promise<Result<User>>;
 }
