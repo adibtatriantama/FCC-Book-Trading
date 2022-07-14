@@ -6,6 +6,7 @@ export interface TradeRepo {
   findTradeByOwnerId(ownerId: string): Promise<Result<Trade[]>>;
   findTradeByTraderId(traderId: string): Promise<Result<Trade[]>>;
   findTradeByBookId(bookId: string): Promise<Result<Trade[]>>;
+  findPendingTradeCountByBookId(bookId: string): Promise<Result<number>>;
 
   save(trade: Trade): Promise<Result<Trade>>;
   remove(trade: Trade): Promise<Result<void>>;

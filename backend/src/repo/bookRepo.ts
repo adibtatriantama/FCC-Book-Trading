@@ -8,4 +8,5 @@ export interface BookRepo {
   findRecent(): Promise<Result<Book[]>>;
 
   save(book: Book): Promise<Result<Book>>;
+  remove(book: Book): Promise<Result<void>>;
 }
