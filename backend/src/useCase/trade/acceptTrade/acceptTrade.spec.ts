@@ -4,9 +4,7 @@ import { EntityNotFoundError, UnexpectedError } from 'src/core/useCaseError';
 import { Book, BookProps } from 'src/domain/book';
 import { Trade } from 'src/domain/trade';
 import { User } from 'src/domain/user';
-import { BookRepo } from 'src/repo/bookRepo';
 import { TradeRepo } from 'src/repo/tradeRepo';
-import { UserRepo } from 'src/repo/userRepo';
 import {
   AcceptTrade,
   AcceptTradeRequest,

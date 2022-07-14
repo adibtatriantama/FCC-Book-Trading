@@ -1,7 +1,6 @@
 import { Book, BookProps } from 'src/domain/book';
 import { Trade } from 'src/domain/trade';
 import { User, UserProps } from 'src/domain/user';
-import { BookMapper } from './bookMapper';
 import { TradeMapper } from './tradeMapper';
 
 const buildUser = (params?: Partial<UserProps>, id?: string) => {

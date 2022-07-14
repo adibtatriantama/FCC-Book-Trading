@@ -6,12 +6,9 @@ import {
   UnexpectedError,
   UseCaseError,
 } from 'src/core/useCaseError';
-import { Trade } from 'src/domain/trade';
 import { TradeDto } from 'src/dto/tradeDto';
 import { TradeMapper } from 'src/mapper/tradeMapper';
-import { BookRepo } from 'src/repo/bookRepo';
 import { TradeRepo } from 'src/repo/tradeRepo';
-import { UserRepo } from 'src/repo/userRepo';
 
 export type AcceptTradeRequest = {
   userId: string;

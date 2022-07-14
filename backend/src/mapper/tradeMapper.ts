@@ -1,6 +1,4 @@
-import { Book } from 'src/domain/book';
 import { Trade } from 'src/domain/trade';
-import { BookDto } from 'src/dto/bookDto';
 import { TradeDto } from 'src/dto/tradeDto';
 import { BookMapper } from './bookMapper';
 import { UserMapper } from './userMapper';
