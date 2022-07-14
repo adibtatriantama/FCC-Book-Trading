@@ -33,6 +33,8 @@ const buildMockTradeRepo = (params?: Partial<TradeRepo>) => {
     findTradeByOwnerId: params?.findTradeByOwnerId ?? jest.fn(),
     findTradeByTraderId: params?.findTradeByTraderId ?? jest.fn(),
     findTradeByBookId: params?.findTradeByBookId ?? jest.fn(),
+    findPendingTradeCountByBookId:
+      params?.findPendingTradeCountByBookId ?? jest.fn(),
   };
 };
 

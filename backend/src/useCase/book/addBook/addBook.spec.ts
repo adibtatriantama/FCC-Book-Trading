@@ -34,6 +34,9 @@ const buildMockBookRepo = (params?: Partial<BookRepo>) => {
     save: params?.save ?? jest.fn(),
     findById: params?.findById ?? jest.fn(),
     batchFindById: params?.batchFindById ?? jest.fn(),
+    findByUserId: params?.findByUserId ?? jest.fn(),
+    findRecent: params?.findRecent ?? jest.fn(),
+    remove: params?.remove ?? jest.fn(),
   };
 };
 
