@@ -1,11 +1,11 @@
 import { Result } from 'src/core/result';
 import { ulid } from 'ulid';
 import { Book } from './book';
-import { User } from './user';
+import { UserDetails } from './userDetails';
 
 export type TradeProps = {
-  owner: User;
-  trader: User;
+  owner: UserDetails;
+  trader: UserDetails;
   ownerBooks: Book[];
   traderBooks: Book[];
   status?: TradeStatus;
@@ -34,11 +34,11 @@ export class Trade {
     );
   }
 
-  get owner(): User {
+  get owner(): UserDetails {
     return this._props.owner;
   }
 
-  get trader(): User {
+  get trader(): UserDetails {
     return this._props.trader;
   }
 

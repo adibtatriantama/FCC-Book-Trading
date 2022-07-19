@@ -1,12 +1,12 @@
 import { Result } from 'src/core/result';
 import { ulid } from 'ulid';
-import { User } from './user';
+import { UserDetails } from './userDetails';
 
 export type BookProps = {
   title: string;
   author: string;
   description: string;
-  owner: User;
+  owner: UserDetails;
 };
 
 export class Book {
@@ -30,11 +30,11 @@ export class Book {
     return this._props.description;
   }
 
-  get owner(): User {
+  get owner(): UserDetails {
     return this._props.owner;
   }
 
-  transferOwnership(newOwner: User): void {
+  transferOwnership(newOwner: UserDetails): void {
     this.isOwnerChanged = true;
     this._props.owner = newOwner;
   }

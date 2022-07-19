@@ -2,7 +2,7 @@ import { Result } from 'src/core/result';
 import { UnexpectedError } from 'src/core/useCaseError';
 import { Book, BookProps } from 'src/domain/book';
 import { Trade } from 'src/domain/trade';
-import { User } from 'src/domain/user';
+import { UserDetails } from 'src/domain/userDetails';
 import { BookRepo } from 'src/repo/bookRepo';
 import { TradeRepo } from 'src/repo/tradeRepo';
 import { UserRepo } from 'src/repo/userRepo';
@@ -12,20 +12,20 @@ import {
   InvalidBookError,
 } from './createTrade';
 
-const dummyOwner = User.create(
-  { nickname: 'owner', email: 'owner@mail.com' },
-  'ownerId',
-).getValue();
+const dummyOwner = UserDetails.create({
+  id: 'ownerId',
+  nickname: 'owner',
+}).getValue();
 
-const dummyTrader = User.create(
-  { nickname: 'trader', email: 'trader@mail.com' },
-  'traderId',
-).getValue();
+const dummyTrader = UserDetails.create({
+  id: 'traderId',
+  nickname: 'trader',
+}).getValue();
 
-const somebodyElse = User.create(
-  { nickname: 'unknown', email: 'unknown@mail.com' },
-  'unknownId',
-).getValue();
+const somebodyElse = UserDetails.create({
+  id: 'unknownId',
+  nickname: 'unknown',
+}).getValue();
 
 let useCase: CreateTrade;
 let mockTradeRepo: TradeRepo;

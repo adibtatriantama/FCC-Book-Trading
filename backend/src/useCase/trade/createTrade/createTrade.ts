@@ -4,6 +4,7 @@ import { UnexpectedError, UseCaseError } from 'src/core/useCaseError';
 import { Trade } from 'src/domain/trade';
 import { TradeDto } from 'src/dto/tradeDto';
 import { TradeMapper } from 'src/mapper/tradeMapper';
+import { UserMapper } from 'src/mapper/userMapper';
 import { BookRepo } from 'src/repo/bookRepo';
 import { TradeRepo } from 'src/repo/tradeRepo';
 import { UserRepo } from 'src/repo/userRepo';
@@ -79,8 +80,8 @@ export class CreateTrade
     }
 
     const trade = Trade.create({
-      owner,
-      trader,
+      owner: UserMapper.toDetails(owner),
+      trader: UserMapper.toDetails(trader),
       ownerBooks,
       traderBooks,
     }).getValue();

@@ -4,6 +4,7 @@ import { UnexpectedError, UseCaseError } from 'src/core/useCaseError';
 import { Book, BookProps } from 'src/domain/book';
 import { BookDto } from 'src/dto/bookDto';
 import { BookMapper } from 'src/mapper/bookMapper';
+import { UserMapper } from 'src/mapper/userMapper';
 import { BookRepo } from 'src/repo/bookRepo';
 import { UserRepo } from 'src/repo/userRepo';
 
@@ -27,7 +28,7 @@ export class AddBook implements UseCase<AddBookRequest, AddBookResponse> {
     const owner = getUserResult.getValue();
 
     const book = Book.create({
-      owner,
+      owner: UserMapper.toDetails(owner),
       ...request,
     }).getValue();
 

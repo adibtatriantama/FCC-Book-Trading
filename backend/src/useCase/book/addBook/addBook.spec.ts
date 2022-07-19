@@ -1,7 +1,7 @@
 import { Result } from 'src/core/result';
 import { UnexpectedError } from 'src/core/useCaseError';
 import { Book } from 'src/domain/book';
-import { User } from 'src/domain/user';
+import { UserDetails } from 'src/domain/userDetails';
 import { BookRepo } from 'src/repo/bookRepo';
 import { UserRepo } from 'src/repo/userRepo';
 import { AddBook, AddBookRequest } from './addBook';
@@ -10,10 +10,10 @@ let useCase: AddBook;
 let mockBookRepo: BookRepo;
 let mockUserRepo: UserRepo;
 
-const dummyUser = User.create(
-  { nickname: 'tester', email: 'tester@mail.com' },
-  'testerId',
-).getValue();
+const dummyUser = UserDetails.create({
+  id: 'testerId',
+  nickname: 'tester',
+}).getValue();
 
 const dummyBook = Book.create({
   title: 'title',

@@ -1,16 +1,24 @@
 import { Book } from './book';
 import { Trade } from './trade';
-import { User } from './user';
+import { UserDetails } from './userDetails';
 
-const dummyOwner = User.create(
-  { nickname: 'owner', email: 'owner.mail.com' },
-  'owner-id',
-).getValue();
+const dummyOwner = UserDetails.create({
+  nickname: 'owner',
+  id: 'owner-id',
+  address: {
+    city: 'city',
+    state: 'state',
+  },
+}).getValue();
 
-const dummyTrader = User.create(
-  { nickname: 'trader', email: 'trader.mail.com' },
-  'trader-id',
-).getValue();
+const dummyTrader = UserDetails.create({
+  nickname: 'trader',
+  id: 'trader-id',
+  address: {
+    city: 'city',
+    state: 'state',
+  },
+}).getValue();
 
 const buildBook1 = () =>
   Book.create(

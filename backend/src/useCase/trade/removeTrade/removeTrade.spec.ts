@@ -3,7 +3,7 @@ import { Result } from 'src/core/result';
 import { EntityNotFoundError, UnexpectedError } from 'src/core/useCaseError';
 import { Book, BookProps } from 'src/domain/book';
 import { Trade } from 'src/domain/trade';
-import { User } from 'src/domain/user';
+import { UserDetails } from 'src/domain/userDetails';
 import { TradeRepo } from 'src/repo/tradeRepo';
 import {
   RemoveTrade,
@@ -11,20 +11,20 @@ import {
   UnableToRemoveTradeError,
 } from './removeTrade';
 
-const dummyOwner = User.create(
-  { nickname: 'owner', email: 'owner@mail.com' },
-  'ownerId',
-).getValue();
+const dummyOwner = UserDetails.create({
+  id: 'ownerId',
+  nickname: 'owner',
+}).getValue();
 
-const dummyTrader = User.create(
-  { nickname: 'trader', email: 'trader@mail.com' },
-  'traderId',
-).getValue();
+const dummyTrader = UserDetails.create({
+  id: 'traderId',
+  nickname: 'trader',
+}).getValue();
 
-const somebodyElse = User.create(
-  { nickname: 'unknown', email: 'unknown@mail.com' },
-  'unknownId',
-).getValue();
+const somebodyElse = UserDetails.create({
+  id: 'unknownId',
+  nickname: 'unknown',
+}).getValue();
 
 let useCase: RemoveTrade;
 let mockTradeRepo: TradeRepo;

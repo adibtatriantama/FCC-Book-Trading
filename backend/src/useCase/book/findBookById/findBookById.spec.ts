@@ -2,14 +2,14 @@ import { NOT_FOUND } from 'src/constant';
 import { Result } from 'src/core/result';
 import { EntityNotFoundError, UnexpectedError } from 'src/core/useCaseError';
 import { Book } from 'src/domain/book';
-import { User } from 'src/domain/user';
+import { UserDetails } from 'src/domain/userDetails';
 import { BookRepo } from 'src/repo/bookRepo';
 import { FindBookById } from './findBookById';
 
-const dummyUser = User.create(
-  { nickname: 'tester', email: 'tester@mail.com' },
-  'testerId',
-).getValue();
+const dummyUser = UserDetails.create({
+  id: 'testerId',
+  nickname: 'tester',
+}).getValue();
 
 const dummyBook = Book.create({
   title: 'title',

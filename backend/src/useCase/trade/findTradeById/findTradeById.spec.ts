@@ -3,19 +3,20 @@ import { Result } from 'src/core/result';
 import { EntityNotFoundError, UnexpectedError } from 'src/core/useCaseError';
 import { Book, BookProps } from 'src/domain/book';
 import { Trade } from 'src/domain/trade';
-import { User } from 'src/domain/user';
+
+import { UserDetails } from 'src/domain/userDetails';
 import { TradeRepo } from 'src/repo/tradeRepo';
 import { FindTradeById, FindTradeByIdRequest } from './findTradeById';
 
-const dummyOwner = User.create(
-  { nickname: 'owner', email: 'owner@mail.com' },
-  'ownerId',
-).getValue();
+const dummyOwner = UserDetails.create({
+  id: 'ownerId',
+  nickname: 'owner',
+}).getValue();
 
-const dummyTrader = User.create(
-  { nickname: 'trader', email: 'trader@mail.com' },
-  'traderId',
-).getValue();
+const dummyTrader = UserDetails.create({
+  id: 'traderId',
+  nickname: 'trader',
+}).getValue();
 
 let useCase: FindTradeById;
 let mockTradeRepo: TradeRepo;

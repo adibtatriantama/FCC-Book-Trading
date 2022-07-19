@@ -1,14 +1,14 @@
 import { Result } from 'src/core/result';
 import { UnexpectedError } from 'src/core/useCaseError';
 import { Book } from 'src/domain/book';
-import { User } from 'src/domain/user';
+import { UserDetails } from 'src/domain/userDetails';
 import { BookRepo } from 'src/repo/bookRepo';
 import { FindBookByUser, FindBookByUserRequest } from './findBookByUser';
 
-const dummyUser = User.create(
-  { nickname: 'tester', email: 'tester@mail.com' },
-  'testerId',
-).getValue();
+const dummyUser = UserDetails.create({
+  nickname: 'tester',
+  id: 'testerId',
+}).getValue();
 
 const dummyBook = Book.create({
   title: 'title',

@@ -1,20 +1,17 @@
 import { Book, BookProps } from 'src/domain/book';
 import { Trade } from 'src/domain/trade';
-import { User, UserProps } from 'src/domain/user';
+import { UserDetails, UserDetailsProps } from 'src/domain/userDetails';
 import { TradeMapper } from './tradeMapper';
 
-const buildUser = (params?: Partial<UserProps>, id?: string) => {
-  return User.create(
-    {
-      nickname: params.nickname ?? 'tester',
-      email: params.email ?? 'tester@mail.com',
-      address: {
-        state: 'state',
-        city: 'city',
-      },
+const buildUserDetails = (params?: Partial<UserDetailsProps>): UserDetails => {
+  return UserDetails.create({
+    id: params.id ?? 'id',
+    nickname: params.nickname ?? 'tester',
+    address: params.address ?? {
+      state: 'state',
+      city: 'city',
     },
-    id,
-  ).getValue();
+  }).getValue();
 };
 
 const buildBook = (params?: Partial<BookProps>, id?: string) => {
@@ -30,20 +27,37 @@ const buildBook = (params?: Partial<BookProps>, id?: string) => {
 };
 
 describe('TradeMapper', () => {
-  const owner = buildUser(
-    { nickname: 'owner', email: 'owner@mail.com' },
-    'ownerId',
-  );
-  const trader = buildUser(
-    { nickname: 'trader', email: 'trader@mail.com' },
-    'traderId',
-  );
+  const owner = buildUserDetails({
+    id: 'ownerId',
+    nickname: 'owner',
+  });
+
+  const trader = buildUserDetails({
+    id: 'traderId',
+    nickname: 'trader',
+  });
 
   it('should map correctly', () => {
     const trade = Trade.create(
       {
-        ownerBooks: [buildBook({ title: 'book1', owner }, 'book1')],
-        traderBooks: [buildBook({ title: 'book2', owner: trader }, 'book2')],
+        ownerBooks: [
+          buildBook(
+            {
+              title: 'book1',
+              owner,
+            },
+            'book1',
+          ),
+        ],
+        traderBooks: [
+          buildBook(
+            {
+              title: 'book2',
+              owner: trader,
+            },
+            'book2',
+          ),
+        ],
         status: 'rejected',
         owner,
         trader,
@@ -56,6 +70,7 @@ describe('TradeMapper', () => {
     expect(result).toStrictEqual({
       id: 'tradeId',
       owner: {
+        id: 'ownerId',
         nickname: 'owner',
         address: {
           state: 'state',
@@ -63,6 +78,7 @@ describe('TradeMapper', () => {
         },
       },
       trader: {
+        id: 'traderId',
         nickname: 'trader',
         address: {
           state: 'state',
@@ -76,6 +92,7 @@ describe('TradeMapper', () => {
           author: 'author',
           description: 'descr',
           owner: {
+            id: 'ownerId',
             nickname: 'owner',
             address: {
               state: 'state',
@@ -91,6 +108,7 @@ describe('TradeMapper', () => {
           author: 'author',
           description: 'descr',
           owner: {
+            id: 'traderId',
             nickname: 'trader',
             address: {
               state: 'state',

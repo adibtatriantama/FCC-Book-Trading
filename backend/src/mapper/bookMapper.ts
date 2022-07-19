@@ -1,6 +1,6 @@
 import { Book } from 'src/domain/book';
 import { BookDto } from 'src/dto/bookDto';
-import { UserMapper } from './userMapper';
+import { UserDetailsMapper } from './userDetailsMapper';
 
 export class BookMapper {
   static toDto(book: Book): BookDto {
@@ -9,7 +9,7 @@ export class BookMapper {
       title: book.title,
       author: book.author,
       description: book.description,
-      owner: UserMapper.toDto(book.owner),
+      owner: UserDetailsMapper.toDto(book.owner),
     };
   }
 }
