@@ -15,7 +15,15 @@ export type TradeProps = {
 export type TradeStatus = 'pending' | 'accepted' | 'rejected';
 
 export class Trade {
-  private constructor(private _props: TradeProps, public readonly id: string) {}
+  isNew = false;
+  isBookOwnershipChanged = false;
+
+  private constructor(private _props: TradeProps, public readonly id: string) {
+    if (!id) {
+      this.isNew = true;
+      this.id = ulid();
+    }
+  }
 
   static create(props: TradeProps, id?: string): Result<Trade> {
     if (props.ownerBooks.length === 0 || props.traderBooks.length === 0) {
@@ -30,7 +38,7 @@ export class Trade {
           ...props,
           status,
         },
-        id ?? ulid(),
+        id,
       ),
     );
   }
@@ -79,6 +87,8 @@ export class Trade {
     for (const book of this.traderBooks) {
       book.transferOwnership(this.owner);
     }
+
+    this.isBookOwnershipChanged = true;
   }
 
   reject(): Result<void> {
