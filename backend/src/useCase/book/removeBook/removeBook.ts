@@ -44,7 +44,6 @@ export class RemoveBook
       }
     }
 
-    console.log(findPendingTradeCountResult);
     if (findPendingTradeCountResult.isFailure) {
       return left(new UnexpectedError());
     }
