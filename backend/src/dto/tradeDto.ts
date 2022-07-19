@@ -9,4 +9,5 @@ export type TradeDto = {
   ownerBooks: BookDto[];
   traderBooks: BookDto[];
   status: TradeStatus;
+  createdAt: string;
 };

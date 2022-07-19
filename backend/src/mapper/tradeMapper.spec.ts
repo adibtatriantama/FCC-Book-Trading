@@ -3,6 +3,9 @@ import { Trade } from 'src/domain/trade';
 import { UserDetails, UserDetailsProps } from 'src/domain/userDetails';
 import { TradeMapper } from './tradeMapper';
 
+const dummyDate = new Date();
+const dummyIsoDate = dummyDate.toISOString();
+
 const buildUserDetails = (params?: Partial<UserDetailsProps>): UserDetails => {
   return UserDetails.create({
     id: params.id ?? 'id',
@@ -59,6 +62,7 @@ describe('TradeMapper', () => {
           ),
         ],
         status: 'rejected',
+        createdAt: dummyDate,
         owner,
         trader,
       },
@@ -118,6 +122,7 @@ describe('TradeMapper', () => {
         },
       ],
       status: 'rejected',
+      createdAt: dummyIsoDate,
     });
   });
 });

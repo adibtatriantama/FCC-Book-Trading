@@ -82,6 +82,7 @@ export class CreateTrade
     const trade = Trade.create({
       owner: UserMapper.toDetails(owner),
       trader: UserMapper.toDetails(trader),
+      createdAt: new Date(),
       ownerBooks,
       traderBooks,
     }).getValue();

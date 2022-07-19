@@ -9,6 +9,7 @@ export type TradeProps = {
   ownerBooks: Book[];
   traderBooks: Book[];
   status?: TradeStatus;
+  createdAt: Date;
 };
 
 export type TradeStatus = 'pending' | 'accepted' | 'rejected';
@@ -52,6 +53,10 @@ export class Trade {
 
   get status(): TradeStatus {
     return this._props.status;
+  }
+
+  get createdAt(): Date {
+    return this._props.createdAt;
   }
 
   accept(): Result<void> {

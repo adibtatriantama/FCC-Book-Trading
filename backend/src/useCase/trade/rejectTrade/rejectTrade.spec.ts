@@ -69,6 +69,7 @@ beforeEach(() => {
     ownerBooks: [dummyBook1],
     traderBooks: [dummyBook2],
     status: 'pending',
+    createdAt: new Date(),
   }).getValue();
 
   mockTradeRepo = buildMockTradeRepo({
@@ -109,6 +110,7 @@ describe('Reject Trade', () => {
         ownerBooks: [dummyBook1],
         traderBooks: [dummyBook2],
         status: 'rejected',
+        createdAt: new Date(),
       }).getValue();
 
       mockTradeRepo = buildMockTradeRepo({
@@ -169,6 +171,7 @@ describe('Reject Trade', () => {
         ownerBooks: [dummyBook1],
         traderBooks: [dummyBook2],
         status: 'pending',
+        createdAt: new Date(),
       }).getValue();
 
       mockTradeRepo = buildMockTradeRepo({

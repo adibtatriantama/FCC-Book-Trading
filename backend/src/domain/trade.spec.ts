@@ -57,6 +57,7 @@ describe('Trade', () => {
         trader: dummyTrader,
         ownerBooks: [book1],
         traderBooks: [book2],
+        createdAt: new Date(),
       }).getValue();
     });
 
@@ -90,6 +91,7 @@ describe('Trade', () => {
           ownerBooks: [book1],
           traderBooks: [book2],
           status: 'accepted',
+          createdAt: new Date(),
         }).getValue();
 
         const acceptResult = trade.accept();
@@ -109,6 +111,7 @@ describe('Trade', () => {
         trader: dummyTrader,
         ownerBooks: [book1],
         traderBooks: [book2],
+        createdAt: new Date(),
       }).getValue();
     });
 
@@ -135,6 +138,7 @@ describe('Trade', () => {
           ownerBooks: [book1],
           traderBooks: [book2],
           status: 'rejected',
+          createdAt: new Date(),
         }).getValue();
 
         const rejectResult = trade.reject();

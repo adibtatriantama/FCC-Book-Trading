@@ -61,6 +61,7 @@ beforeEach(() => {
     ownerBooks: [dummyBook1],
     traderBooks: [dummyBook2],
     status: 'pending',
+    createdAt: new Date(),
   }).getValue();
 
   mockTradeRepo = buildMockTradeRepo({

@@ -90,6 +90,7 @@ beforeEach(() => {
     ownerBooks: [dummyBook1],
     traderBooks: [dummyBook2],
     status: 'accepted',
+    createdAt: new Date(),
   }).getValue();
 
   mockTradeRepo = buildMockTradeRepo({
