@@ -3,6 +3,14 @@ app: book-trading
 service: book-trading
 useDotenv: true
 
+custom:
+  BookTradingTableArn:
+    Fn::GetAtt: [BookTradingTable, Arn]
+  UserPoolId:
+    Ref: CognitoUserPoolVotingAppUserPool
+  UserPoolClientId:
+    Ref: CognitoUserPoolClient
+
 plugins:
   - serverless-esbuild
   - serverless-offline
@@ -13,8 +21,42 @@ provider:
   runtime: nodejs14.x
   region: ap-southeast-1
   stage: dev
-
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:BatchGetItem
+        - dynamodb:PutItem
+        - dynamodb:BatchWriteItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - '${self:custom.BookTradingTableArn}'
+        - Fn::Join:
+            - ''
+            - - '${self:custom.BookTradingTableArn}'
+              - '/index/*'
   httpApi:
     cors:
       allowedOrigins:
         - https://adibta-fcc-book-trading.vercel.app
+    authorizers:
+      JwtAuthorizer:
+        type: jwt
+        identitySource: $request.header.Authorization
+        issuerUrl:
+          Fn::Join:
+            - ''
+            - - https://cognito-idp.
+              - ${aws:region}
+              - .amazonaws.com/
+              - Ref: CognitoUserPoolBookTradingUserPool
+        audience:
+          Ref: CognitoUserPoolClient
+
+resources:
+  - ${file(resources/dynamodb-table.yml)}
+  - ${file(resources/cognito-user-pool.yml)}
