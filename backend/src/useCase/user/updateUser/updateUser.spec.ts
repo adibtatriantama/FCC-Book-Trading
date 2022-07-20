@@ -1,9 +1,9 @@
 import { NOT_FOUND } from 'src/constant';
 import { Result } from 'src/core/result';
-import { UnexpectedError } from 'src/core/useCaseError';
+import { EntityNotFoundError, UnexpectedError } from 'src/core/useCaseError';
 import { User } from 'src/domain/user';
 import { UserRepo } from 'src/repo/userRepo';
-import { UpdateUser, UpdateUserRequest, UserNotFoundError } from './updateUser';
+import { UpdateUser, UpdateUserRequest } from './updateUser';
 
 let useCase: UpdateUser;
 let mockUserRepo: UserRepo;
@@ -68,11 +68,11 @@ describe('UpdateUser', () => {
       useCase = new UpdateUser(mockUserRepo);
     });
 
-    it('should return UserNotFoundError', async () => {
+    it('should return EntityNotFoundError', async () => {
       const response = await useCase.execute(dummyRequest);
 
       expect(response.isLeft()).toBe(true);
-      expect(response.value.constructor).toBe(UserNotFoundError);
+      expect(response.value.constructor).toBe(EntityNotFoundError);
     });
   });
 

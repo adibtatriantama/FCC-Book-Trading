@@ -1,7 +1,11 @@
 import { NOT_FOUND } from 'src/constant';
 import { Either, left, right } from 'src/core/either';
 import { UseCase } from 'src/core/useCase';
-import { UseCaseError, UnexpectedError } from 'src/core/useCaseError';
+import {
+  UseCaseError,
+  UnexpectedError,
+  EntityNotFoundError,
+} from 'src/core/useCaseError';
 import { User, UserProps } from 'src/domain/user';
 import { UserDto } from 'src/dto/userDto';
 import { UserMapper } from 'src/mapper/userMapper';
@@ -10,12 +14,6 @@ import { UserRepo } from 'src/repo/userRepo';
 export type UpdateUserRequest = Omit<UserProps, 'email'> & { id: string };
 
 export type UpdateUserResponse = Either<UseCaseError, UserDto>;
-
-export class UserNotFoundError extends UseCaseError {
-  constructor() {
-    super('User not found');
-  }
-}
 
 export class UpdateUser
   implements UseCase<UpdateUserRequest, UpdateUserResponse>
@@ -28,7 +26,7 @@ export class UpdateUser
     if (findExistingUserResult.isFailure) {
       switch (findExistingUserResult.getErrorValue()) {
         case NOT_FOUND:
-          return left(new UserNotFoundError());
+          return left(new EntityNotFoundError());
         default:
           return left(new UnexpectedError());
       }
