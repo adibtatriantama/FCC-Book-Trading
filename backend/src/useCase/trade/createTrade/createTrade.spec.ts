@@ -10,6 +10,7 @@ import {
   CreateTrade,
   CreateTradeRequest,
   InvalidBookError,
+  UnableToCreateTradeError,
 } from './createTrade';
 
 const dummyOwner = UserDetails.create({
@@ -187,6 +188,24 @@ describe('CreateTrade', () => {
 
       expect(response.isLeft()).toBe(true);
       expect(response.value).toBeInstanceOf(InvalidBookError);
+    });
+  });
+
+  describe('when trade with own self', () => {
+    beforeEach(() => {
+      request = {
+        ownerId: 'traderId',
+        traderId: 'traderId',
+        ownerBookIds: ['book2'],
+        traderBookIds: ['book2'],
+      };
+    });
+
+    it('should return UnableToCreateTradeError', async () => {
+      const response = await useCase.execute(request);
+
+      expect(response.isLeft()).toBe(true);
+      expect(response.value).toBeInstanceOf(UnableToCreateTradeError);
     });
   });
 

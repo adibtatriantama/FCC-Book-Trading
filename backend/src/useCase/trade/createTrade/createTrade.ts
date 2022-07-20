@@ -16,6 +16,12 @@ export type CreateTradeRequest = {
   traderBookIds: string[];
 };
 
+export class UnableToCreateTradeError extends UseCaseError {
+  constructor(message: string) {
+    super(`Unable to create trade: ${message}`);
+  }
+}
+
 export class InvalidBookError extends UseCaseError {
   constructor() {
     super('The books you are requesting are no longer valid');
@@ -34,6 +40,9 @@ export class CreateTrade
   ) {}
 
   async execute(request: CreateTradeRequest): Promise<CreateTradeResponse> {
+    if (request.ownerId === request.traderId) {
+      return left(new UnableToCreateTradeError("Can't trade with same person"));
+    }
     const batchFindUserPromise = this.userRepo.batchFindById([
       request.ownerId,
       request.traderId,
