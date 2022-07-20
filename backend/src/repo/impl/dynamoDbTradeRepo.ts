@@ -1,5 +1,6 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocument } from '@aws-sdk/lib-dynamodb';
+import { NOT_FOUND } from 'src/constant';
 import { Result } from 'src/core/result';
 import { Trade } from 'src/domain/trade';
 import { TradeRepo } from '../tradeRepo';
@@ -41,6 +42,10 @@ export class DynamoDbTradeRepo implements TradeRepo {
 
         firstLoad = false;
         lastEvaluatedKey = queryResult.LastEvaluatedKey;
+      }
+
+      if (!items || items.length === 0) {
+        return Result.fail(NOT_FOUND);
       }
 
       const metadata = items.find((item) => /metadata/.test(item.SK));
