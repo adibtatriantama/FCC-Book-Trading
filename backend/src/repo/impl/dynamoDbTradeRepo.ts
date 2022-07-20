@@ -78,11 +78,12 @@ export class DynamoDbTradeRepo implements TradeRepo {
         const queryResult = await ddbDoc.query({
           TableName: process.env.TABLE_NAME,
           KeyConditionExpression:
-            'GSI1PK = :pk AND begins_with(GS1SK, :tradePrefix)',
+            'GSI1PK = :pk AND begins_with(GSI1SK, :tradePrefix)',
           ExpressionAttributeValues: {
             ':pk': DB_TRADE_BOOK_OWNER_PREFIX + ownerId,
             ':tradePrefix': DB_TRADE_PREFIX,
           },
+          IndexName: 'GSI1',
           ExclusiveStartKey: lastEvaluatedKey,
         });
 
@@ -118,11 +119,12 @@ export class DynamoDbTradeRepo implements TradeRepo {
         const queryResult = await ddbDoc.query({
           TableName: process.env.TABLE_NAME,
           KeyConditionExpression:
-            'GSI1PK = :pk AND begins_with(GS1SK, :tradePrefix)',
+            'GSI1PK = :pk AND begins_with(GSI1SK, :tradePrefix)',
           ExpressionAttributeValues: {
             ':pk': DB_TRADE_BOOK_TRADER_PREFIX + traderId,
             ':tradePrefix': DB_TRADE_PREFIX,
           },
+          IndexName: 'GSI1',
           ExclusiveStartKey: lastEvaluatedKey,
         });
 
@@ -158,11 +160,12 @@ export class DynamoDbTradeRepo implements TradeRepo {
         const queryResult = await ddbDoc.query({
           TableName: process.env.TABLE_NAME,
           KeyConditionExpression:
-            'GSI1PK = :pk AND begins_with(GS1SK, :tradePrefix)',
+            'GSI1PK = :pk AND begins_with(GSI1SK, :tradePrefix)',
           ExpressionAttributeValues: {
             ':pk': DB_TRADE_ITEM_PREFIX + bookId,
             ':tradePrefix': DB_TRADE_PREFIX,
           },
+          IndexName: 'GSI1',
           ExclusiveStartKey: lastEvaluatedKey,
         });
 

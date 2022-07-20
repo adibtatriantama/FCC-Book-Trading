@@ -120,8 +120,7 @@ export class DynamoDbBookRepo implements BookRepo {
       while (firstLoad || lastEvaluatedKey) {
         const queryResult = await ddbDoc.query({
           TableName: process.env.TABLE_NAME,
-          KeyConditionExpression:
-            'PK = :pk AND begins_with(GSI1SK, :bookPrefix)',
+          KeyConditionExpression: 'PK = :pk AND begins_with(SK, :bookPrefix)',
           ExpressionAttributeValues: {
             ':pk': DB_BOOK,
             ':bookPrefix': DB_BOOK_PREFIX,
