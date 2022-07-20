@@ -79,8 +79,6 @@ functions:
       - httpApi:
           path: /user/{userId}
           method: get
-          authorizer:
-            name: JwtAuthorizer
   createUser:
     handler: ${self:custom.UserDir}/createUser/handler.main
     events:
