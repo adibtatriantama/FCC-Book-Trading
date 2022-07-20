@@ -10,6 +10,9 @@ custom:
     Ref: CognitoUserPoolVotingAppUserPool
   UserPoolClientId:
     Ref: CognitoUserPoolClient
+  UserDir: src/useCase/user
+  BookDir: src/useCase/book
+  TradeDir: src/useCase/trade
 
 plugins:
   - serverless-esbuild
@@ -56,6 +59,144 @@ provider:
               - Ref: CognitoUserPoolBookTradingUserPool
         audience:
           Ref: CognitoUserPoolClient
+  environment:
+    TABLE_NAME:
+      Ref: BookTradingTable
+
+functions:
+  # USER
+  findUserMe:
+    handler: ${self:custom.UserDir}/findUserById/handler.me
+    events:
+      - httpApi:
+          path: /me
+          method: get
+          authorizer:
+            name: JwtAuthorizer
+  findUserById:
+    handler: ${self:custom.UserDir}/findUserById/handler.main
+    events:
+      - httpApi:
+          path: /user/{userId}
+          method: get
+          authorizer:
+            name: JwtAuthorizer
+  createUser:
+    handler: ${self:custom.UserDir}/createUser/handler.main
+    events:
+      - cognitoUserPool:
+          pool: BookTradingUserPool
+          trigger: PostConfirmation
+  updateUser:
+    handler: ${self:custom.UserDir}/updateUser/handler.main
+    events:
+      - httpApi:
+          path: /me
+          method: patch
+          authorizer:
+            name: JwtAuthorizer
+
+  # Book
+  findRecentBook:
+    handler: ${self:custom.BookDir}/findRecentBook/handler.main
+    events:
+      - httpApi:
+          path: /book
+          method: get
+  addBook:
+    handler: ${self:custom.BookDir}/addBook/handler.main
+    events:
+      - httpApi:
+          path: /book
+          method: post
+          authorizer:
+            name: JwtAuthorizer
+  findOwnBook:
+    handler: ${self:custom.BookDir}/findBookByUser/handler.me
+    events:
+      - httpApi:
+          path: /me/book
+          method: get
+          authorizer:
+            name: JwtAuthorizer
+  findBookByUser:
+    handler: ${self:custom.BookDir}/findBookByUser/handler.main
+    events:
+      - httpApi:
+          path: /user/{userId}/book
+          method: get
+  findBookById:
+    handler: ${self:custom.BookDir}/findBookById/handler.main
+    events:
+      - httpApi:
+          path: /book/{bookId}
+          method: get
+  removeBook:
+    handler: ${self:custom.BookDir}/removeBook/handler.main
+    events:
+      - httpApi:
+          path: /book/{bookId}
+          method: delete
+          authorizer:
+            name: JwtAuthorizer
+
+  # Trade
+  createTrade:
+    handler: ${self:custom.TradeDir}/createTrade/handler.main
+    events:
+      - httpApi:
+          path: /trade
+          method: post
+          authorizer:
+            name: JwtAuthorizer
+  findTradeById:
+    handler: ${self:custom.TradeDir}/findTradeById/handler.main
+    events:
+      - httpApi:
+          path: /trade/{tradeId}
+          method: get
+  removeTrade:
+    handler: ${self:custom.TradeDir}/removeTrade/handler.main
+    events:
+      - httpApi:
+          path: /trade/{tradeId}
+          method: delete
+          authorizer:
+            name: JwtAuthorizer
+  rejectTrade:
+    handler: ${self:custom.TradeDir}/rejectTrade/handler.main
+    events:
+      - httpApi:
+          path: /trade/{tradeId}/reject
+          method: post
+          authorizer:
+            name: JwtAuthorizer
+  acceptTrade:
+    handler: ${self:custom.TradeDir}/acceptTrade/handler.main
+    events:
+      - httpApi:
+          path: /trade/{tradeId}/accept
+          method: post
+          authorizer:
+            name: JwtAuthorizer
+  findTradeByBook:
+    handler: ${self:custom.TradeDir}/findTradeByBook/handler.main
+    events:
+      - httpApi:
+          path: /book/{bookId}/trade
+          method: get
+  findTradeByOwner:
+    handler: ${self:custom.TradeDir}/findTradeByOwner/handler.main
+    events:
+      - httpApi:
+          path: /user/{userId}/tradeAsOwner
+          method: get
+  findTradeByTrader:
+    handler: ${self:custom.TradeDir}/findTradeByTrader/handler.main
+    events:
+      - httpApi:
+          path: /user/{userId}/tradeAsTrader
+          method: get
 
 resources:
   - ${file(resources/dynamodb-table.yml)}
