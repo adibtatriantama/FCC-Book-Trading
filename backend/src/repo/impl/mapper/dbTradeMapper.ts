@@ -7,7 +7,6 @@ import {
   DB_TRADE_BOOK_TRADER_PREFIX,
   DB_TRADE_ITEM_PREFIX,
   DB_TRADE_PREFIX,
-  DB_USER_PREFIX,
 } from '../constant';
 import {
   DbTrade,
@@ -120,7 +119,7 @@ export class DbTradeMapper {
         return {
           PK: DB_TRADE_PREFIX + entity.id,
           SK: DB_TRADE_ITEM_PREFIX + book.id,
-          GSI1PK: DB_USER_PREFIX + book.owner.id,
+          GSI1PK: DB_TRADE_ITEM_PREFIX + book.id,
           GSI1SK: DB_TRADE_PREFIX + entity.id,
           kind: 'Trade Item',
           bookId: book.id,
@@ -135,7 +134,7 @@ export class DbTradeMapper {
         return {
           PK: DB_TRADE_PREFIX + entity.id,
           SK: DB_TRADE_ITEM_PREFIX + book.id,
-          GSI1PK: DB_USER_PREFIX + book.owner.id,
+          GSI1PK: DB_TRADE_ITEM_PREFIX + book.id,
           GSI1SK: DB_TRADE_PREFIX + entity.id,
           kind: 'Trade Item',
           bookId: book.id,

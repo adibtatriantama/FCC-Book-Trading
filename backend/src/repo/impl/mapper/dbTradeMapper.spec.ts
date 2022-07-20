@@ -218,7 +218,7 @@ describe('DbTradeMapper', () => {
           {
             PK: 't#t1',
             SK: 'ti#book1',
-            GSI1PK: 'u#user1',
+            GSI1PK: 'ti#book1',
             GSI1SK: 't#t1',
             kind: 'Trade Item',
             bookId: 'book1',
@@ -231,7 +231,7 @@ describe('DbTradeMapper', () => {
           {
             PK: 't#t1',
             SK: 'ti#book2',
-            GSI1PK: 'u#user2',
+            GSI1PK: 'ti#book2',
             GSI1SK: 't#t1',
             kind: 'Trade Item',
             bookId: 'book2',
