@@ -10,7 +10,9 @@ import { BookDto } from 'src/dto/bookDto';
 import { BookMapper } from 'src/mapper/bookMapper';
 import { BookRepo } from 'src/repo/bookRepo';
 
-export type FindBookByIdRequest = string;
+export type FindBookByIdRequest = {
+  bookId: string;
+};
 
 export type FindBookByIdResponse = Either<UseCaseError, BookDto>;
 
@@ -19,8 +21,8 @@ export class FindBookById
 {
   constructor(private readonly bookRepo: BookRepo) {}
 
-  async execute(request: string): Promise<FindBookByIdResponse> {
-    const findByIdResult = await this.bookRepo.findById(request);
+  async execute(request: FindBookByIdRequest): Promise<FindBookByIdResponse> {
+    const findByIdResult = await this.bookRepo.findById(request.bookId);
 
     if (findByIdResult.isFailure) {
       switch (findByIdResult.getErrorValue()) {

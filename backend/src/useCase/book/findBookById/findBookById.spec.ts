@@ -42,7 +42,9 @@ describe('FindBookById', () => {
   });
 
   it('should return dto', async () => {
-    const request = 'pollId';
+    const request = {
+      bookId: 'bookId',
+    };
 
     const response = await useCase.execute(request);
 
@@ -60,7 +62,9 @@ describe('FindBookById', () => {
     });
 
     it('should return EntityNotFoundError', async () => {
-      const request = 'pollId';
+      const request = {
+        bookId: 'bookId',
+      };
 
       const response = await useCase.execute(request);
 
@@ -79,7 +83,9 @@ describe('FindBookById', () => {
     });
 
     it('should return UnexpectedError', async () => {
-      const request = 'pollId';
+      const request = {
+        bookId: 'bookId',
+      };
 
       const response = await useCase.execute(request);
 
