@@ -80,7 +80,7 @@ beforeEach(() => {
   useCase = new RemoveTrade(mockTradeRepo);
 
   request = {
-    userId: 'ownerId',
+    userId: 'traderId',
     tradeId: 'tradeId',
   };
 });
@@ -162,8 +162,8 @@ describe('Remove Trade', () => {
   describe("when user isn't the trade requester", () => {
     beforeEach(() => {
       dummyTrade = Trade.create({
-        owner: somebodyElse,
-        trader: dummyTrader,
+        owner: dummyOwner,
+        trader: somebodyElse,
         ownerBooks: [dummyBook1],
         traderBooks: [dummyBook2],
         status: 'pending',
