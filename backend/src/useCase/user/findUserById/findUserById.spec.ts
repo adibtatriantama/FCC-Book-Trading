@@ -3,6 +3,7 @@ import { Result } from 'src/core/result';
 import { EntityNotFoundError, UnexpectedError } from 'src/core/useCaseError';
 import { User } from 'src/domain/user';
 import { UserRepo } from 'src/repo/userRepo';
+import { buildMockUserRepo } from 'src/test/helper';
 import { FindUserById } from './findUserById';
 
 const dummyEntity = User.create(
@@ -12,14 +13,6 @@ const dummyEntity = User.create(
 
 let useCase: FindUserById;
 let mockUserRepo: UserRepo;
-
-const buildMockUserRepo = (params?: Partial<UserRepo>) => {
-  return {
-    findById: params?.findById ?? jest.fn(),
-    batchFindById: params?.batchFindById ?? jest.fn(),
-    save: params?.save ?? jest.fn(),
-  };
-};
 
 describe('FindUserById', () => {
   beforeEach(() => {

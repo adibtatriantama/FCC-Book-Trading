@@ -4,6 +4,7 @@ import { Book } from 'src/domain/book';
 import { UserDetails } from 'src/domain/userDetails';
 import { BookRepo } from 'src/repo/bookRepo';
 import { UserRepo } from 'src/repo/userRepo';
+import { buildMockBookRepo, buildMockUserRepo } from 'src/test/helper';
 import { AddBook, AddBookRequest } from './addBook';
 
 let useCase: AddBook;
@@ -27,25 +28,6 @@ const dummyRequest: AddBookRequest = {
   author: 'author',
   description: 'descr',
   ownerId: 'testerId',
-};
-
-const buildMockBookRepo = (params?: Partial<BookRepo>) => {
-  return {
-    save: params?.save ?? jest.fn(),
-    findById: params?.findById ?? jest.fn(),
-    batchFindById: params?.batchFindById ?? jest.fn(),
-    findByUserId: params?.findByUserId ?? jest.fn(),
-    findRecent: params?.findRecent ?? jest.fn(),
-    remove: params?.remove ?? jest.fn(),
-  };
-};
-
-const buildMockUserRepo = (params?: Partial<UserRepo>) => {
-  return {
-    findById: params?.findById ?? jest.fn(),
-    batchFindById: params?.batchFindById ?? jest.fn(),
-    save: params?.save ?? jest.fn(),
-  };
 };
 
 describe('AddBook', () => {

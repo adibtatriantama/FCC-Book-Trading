@@ -5,6 +5,7 @@ import { Book, BookProps } from 'src/domain/book';
 import { Trade } from 'src/domain/trade';
 import { UserDetails } from 'src/domain/userDetails';
 import { TradeRepo } from 'src/repo/tradeRepo';
+import { buildMockTradeRepo } from 'src/test/helper';
 import {
   RemoveTrade,
   RemoveTradeRequest,
@@ -34,19 +35,6 @@ let dummyBook2: Book;
 let dummyTrade: Trade;
 
 let request: RemoveTradeRequest;
-
-const buildMockTradeRepo = (params?: Partial<TradeRepo>) => {
-  return {
-    save: params?.save ?? jest.fn(),
-    findById: params?.findById ?? jest.fn(),
-    remove: params?.remove ?? jest.fn(),
-    findTradeByOwnerId: params?.findTradeByOwnerId ?? jest.fn(),
-    findTradeByTraderId: params?.findTradeByTraderId ?? jest.fn(),
-    findTradeByBookId: params?.findTradeByBookId ?? jest.fn(),
-    findPendingTradeCountByBookId:
-      params?.findPendingTradeCountByBookId ?? jest.fn(),
-  };
-};
 
 const buildBook = (params?: Partial<BookProps>, id?: string) => {
   return Book.create(

@@ -3,6 +3,7 @@ import { Result } from 'src/core/result';
 import { UnexpectedError } from 'src/core/useCaseError';
 import { User } from 'src/domain/user';
 import { UserRepo } from 'src/repo/userRepo';
+import { buildMockUserRepo } from 'src/test/helper';
 import { CreateUser, UserAlreadyExist } from './createUser';
 
 let useCase: CreateUser;
@@ -17,14 +18,6 @@ const dummyUser = User.create(
   { nickname: 'tester', email: 'tester@mail.com' },
   'testerId',
 );
-
-const buildMockUserRepo = (params?: Partial<UserRepo>) => {
-  return {
-    findById: params?.findById ?? jest.fn(),
-    batchFindById: params?.batchFindById ?? jest.fn(),
-    save: params?.save ?? jest.fn(),
-  };
-};
 
 afterEach(() => {
   jest.clearAllMocks();

@@ -3,6 +3,7 @@ import { UnexpectedError } from 'src/core/useCaseError';
 import { Book } from 'src/domain/book';
 import { UserDetails } from 'src/domain/userDetails';
 import { BookRepo } from 'src/repo/bookRepo';
+import { buildMockBookRepo } from 'src/test/helper';
 import { FindBookByUser, FindBookByUserRequest } from './findBookByUser';
 
 const dummyUser = UserDetails.create({
@@ -21,17 +22,6 @@ let useCase: FindBookByUser;
 let mockBookRepo: BookRepo;
 
 let request: FindBookByUserRequest;
-
-const buildMockBookRepo = (params?: Partial<BookRepo>) => {
-  return {
-    save: params?.save ?? jest.fn(),
-    findById: params?.findById ?? jest.fn(),
-    batchFindById: params?.batchFindById ?? jest.fn(),
-    findByUserId: params?.findByUserId ?? jest.fn(),
-    findRecent: params?.findRecent ?? jest.fn(),
-    remove: params?.remove ?? jest.fn(),
-  };
-};
 
 beforeEach(() => {
   mockBookRepo = buildMockBookRepo({

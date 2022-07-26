@@ -5,6 +5,7 @@ import { Book } from 'src/domain/book';
 import { UserDetails } from 'src/domain/userDetails';
 import { BookRepo } from 'src/repo/bookRepo';
 import { TradeRepo } from 'src/repo/tradeRepo';
+import { buildMockBookRepo, buildMockTradeRepo } from 'src/test/helper';
 import {
   RemoveBook,
   RemoveBookRequest,
@@ -31,30 +32,6 @@ const dummyBook = Book.create(
 ).getValue();
 
 let request: RemoveBookRequest;
-
-const buildMockBookRepo = (params?: Partial<BookRepo>) => {
-  return {
-    save: params?.save ?? jest.fn(),
-    findById: params?.findById ?? jest.fn(),
-    batchFindById: params?.batchFindById ?? jest.fn(),
-    findByUserId: params?.findByUserId ?? jest.fn(),
-    findRecent: params?.findRecent ?? jest.fn(),
-    remove: params?.remove ?? jest.fn(),
-  };
-};
-
-const buildMockTradeRepo = (params?: Partial<TradeRepo>) => {
-  return {
-    save: params?.save ?? jest.fn(),
-    findById: params?.findById ?? jest.fn(),
-    remove: params?.remove ?? jest.fn(),
-    findTradeByOwnerId: params?.findTradeByOwnerId ?? jest.fn(),
-    findTradeByTraderId: params?.findTradeByTraderId ?? jest.fn(),
-    findTradeByBookId: params?.findTradeByBookId ?? jest.fn(),
-    findPendingTradeCountByBookId:
-      params?.findPendingTradeCountByBookId ?? jest.fn(),
-  };
-};
 
 beforeEach(() => {
   mockBookRepo = buildMockBookRepo({

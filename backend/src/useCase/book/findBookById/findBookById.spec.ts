@@ -4,6 +4,7 @@ import { EntityNotFoundError, UnexpectedError } from 'src/core/useCaseError';
 import { Book } from 'src/domain/book';
 import { UserDetails } from 'src/domain/userDetails';
 import { BookRepo } from 'src/repo/bookRepo';
+import { buildMockBookRepo } from 'src/test/helper';
 import { FindBookById } from './findBookById';
 
 const dummyUser = UserDetails.create({
@@ -20,17 +21,6 @@ const dummyBook = Book.create({
 
 let useCase: FindBookById;
 let mockBookRepo: BookRepo;
-
-const buildMockBookRepo = (params?: Partial<BookRepo>) => {
-  return {
-    save: params?.save ?? jest.fn(),
-    findById: params?.findById ?? jest.fn(),
-    batchFindById: params?.batchFindById ?? jest.fn(),
-    findByUserId: params?.findByUserId ?? jest.fn(),
-    findRecent: params?.findRecent ?? jest.fn(),
-    remove: params?.remove ?? jest.fn(),
-  };
-};
 
 describe('FindBookById', () => {
   beforeEach(() => {
