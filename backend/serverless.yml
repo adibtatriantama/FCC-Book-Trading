@@ -147,6 +147,12 @@ functions:
           method: post
           authorizer:
             name: JwtAuthorizer
+  findAcceptedTrade:
+    handler: ${self:custom.TradeDir}/findAcceptedTrade/handler.main
+    events:
+      - httpApi:
+          path: /trade
+          method: get
   findTradeById:
     handler: ${self:custom.TradeDir}/findTradeById/handler.main
     events:

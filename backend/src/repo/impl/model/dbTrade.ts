@@ -8,10 +8,13 @@ export type DbTrade = {
 export type DbTradeMetadata = {
   PK: string;
   SK: string;
+  GSI1PK?: string;
+  GSI1SK?: string;
   kind: string;
   id: string;
   status: string;
   createdAt: string;
+  acceptedAt?: string;
 };
 
 export type DbTradeItem = {

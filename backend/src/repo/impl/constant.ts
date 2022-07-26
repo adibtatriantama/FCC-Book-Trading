@@ -7,3 +7,4 @@ export const DB_TRADE_BOOK_TRADER_PREFIX = 'tr#';
 
 export const DB_METADATA = 'metadata';
 export const DB_BOOK = 'book';
+export const DB_TRADE = 'trade';

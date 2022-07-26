@@ -10,4 +10,5 @@ export type TradeDto = {
   traderBooks: BookDto[];
   status: TradeStatus;
   createdAt: string;
+  acceptedAt?: string;
 };

@@ -63,6 +63,7 @@ describe('TradeMapper', () => {
         ],
         status: 'rejected',
         createdAt: dummyDate,
+        acceptedAt: dummyDate,
         owner,
         trader,
       },
@@ -123,6 +124,7 @@ describe('TradeMapper', () => {
       ],
       status: 'rejected',
       createdAt: dummyIsoDate,
+      acceptedAt: dummyIsoDate,
     });
   });
 });

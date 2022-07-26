@@ -5,6 +5,7 @@ import { Result } from 'src/core/result';
 import { Trade } from 'src/domain/trade';
 import { TradeRepo } from '../tradeRepo';
 import {
+  DB_TRADE,
   DB_TRADE_BOOK_OWNER_PREFIX,
   DB_TRADE_BOOK_TRADER_PREFIX,
   DB_TRADE_ITEM_PREFIX,
@@ -43,6 +44,7 @@ export class DynamoDbTradeRepo implements TradeRepo {
         firstLoad = false;
         lastEvaluatedKey = queryResult.LastEvaluatedKey;
       }
+      console.log(items);
 
       if (!items || items.length === 0) {
         return Result.fail(NOT_FOUND);
@@ -85,6 +87,7 @@ export class DynamoDbTradeRepo implements TradeRepo {
           },
           IndexName: 'GSI1',
           ExclusiveStartKey: lastEvaluatedKey,
+          ScanIndexForward: false,
         });
 
         items.push(...queryResult.Items);
@@ -126,6 +129,7 @@ export class DynamoDbTradeRepo implements TradeRepo {
           },
           IndexName: 'GSI1',
           ExclusiveStartKey: lastEvaluatedKey,
+          ScanIndexForward: false,
         });
 
         items.push(...queryResult.Items);
@@ -140,6 +144,7 @@ export class DynamoDbTradeRepo implements TradeRepo {
 
       const findByIdResults = await Promise.all(findByIdPromises);
 
+      console.log(findByIdResults);
       const entities = findByIdResults.map((result) => result.getValue());
 
       return Result.ok(entities);
@@ -167,6 +172,7 @@ export class DynamoDbTradeRepo implements TradeRepo {
           },
           IndexName: 'GSI1',
           ExclusiveStartKey: lastEvaluatedKey,
+          ScanIndexForward: false,
         });
 
         items.push(...queryResult.Items);
@@ -205,6 +211,50 @@ export class DynamoDbTradeRepo implements TradeRepo {
       } else {
         throw new Error(findResult.getErrorValue());
       }
+    } catch (error) {
+      console.error(error);
+      return Result.fail('Unexpected Error');
+    }
+  }
+
+  async findAcceptedTrade(): Promise<Result<Trade[]>> {
+    const items: Record<string, any>[] = [];
+
+    let firstLoad = true;
+    let lastEvaluatedKey: Record<string, any> | undefined = undefined;
+
+    try {
+      while (firstLoad || lastEvaluatedKey) {
+        const queryResult = await ddbDoc.query({
+          TableName: process.env.TABLE_NAME,
+          KeyConditionExpression:
+            'GSI1PK = :pk AND begins_with(GSI1SK, :acceptedTradePrefix)',
+          ExpressionAttributeValues: {
+            ':pk': DB_TRADE,
+            ':acceptedTradePrefix': DB_TRADE_PREFIX + 'accepted#',
+          },
+          IndexName: 'GSI1',
+          ExclusiveStartKey: lastEvaluatedKey,
+          ScanIndexForward: false,
+        });
+
+        items.push(...queryResult.Items);
+
+        firstLoad = false;
+        lastEvaluatedKey = queryResult.LastEvaluatedKey;
+      }
+
+      console.log(items);
+
+      const findByIdPromises = items.map((item) => {
+        return this.findById(item.id);
+      });
+
+      const findByIdResults = await Promise.all(findByIdPromises);
+
+      const entities = findByIdResults.map((result) => result.getValue());
+
+      return Result.ok(entities);
     } catch (error) {
       console.error(error);
       return Result.fail('Unexpected Error');

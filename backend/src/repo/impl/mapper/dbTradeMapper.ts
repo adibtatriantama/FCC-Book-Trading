@@ -3,6 +3,7 @@ import { Trade } from 'src/domain/trade';
 import { UserDetails } from 'src/domain/userDetails';
 import {
   DB_METADATA,
+  DB_TRADE,
   DB_TRADE_BOOK_OWNER_PREFIX,
   DB_TRADE_BOOK_TRADER_PREFIX,
   DB_TRADE_ITEM_PREFIX,
@@ -76,6 +77,7 @@ export class DbTradeMapper {
         traderBooks,
         status: metadata.status,
         createdAt: new Date(metadata.createdAt),
+        acceptedAt: metadata.acceptedAt ? new Date(metadata.acceptedAt) : null,
       },
       metadata.id,
     ).getValue();
@@ -85,10 +87,21 @@ export class DbTradeMapper {
     const metadata: DbTradeMetadata = {
       PK: DB_TRADE_PREFIX + entity.id,
       SK: DB_METADATA,
+      GSI1PK: entity.status === 'accepted' ? DB_TRADE : undefined,
+      GSI1SK:
+        entity.status === 'accepted'
+          ? DB_TRADE_PREFIX +
+            entity.status +
+            '#' +
+            entity.acceptedAt?.toISOString()
+          : undefined,
       kind: 'Trade',
       id: entity.id,
       status: entity.status,
       createdAt: entity.createdAt.toISOString(),
+      acceptedAt: entity.acceptedAt
+        ? entity.acceptedAt.toISOString()
+        : undefined,
     };
 
     const bookOwner: DbTradeUser = {
