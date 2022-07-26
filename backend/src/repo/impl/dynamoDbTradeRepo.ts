@@ -22,7 +22,10 @@ const ddbDoc = DynamoDBDocument.from(ddbclient, {
 });
 
 export class DynamoDbTradeRepo implements TradeRepo {
-  async findById(tradeId: string): Promise<Result<Trade>> {
+  async findById(
+    tradeId: string,
+    options = { consistentRead: false },
+  ): Promise<Result<Trade>> {
     const items: Record<string, any>[] = [];
 
     let firstLoad = true;
@@ -37,6 +40,7 @@ export class DynamoDbTradeRepo implements TradeRepo {
             ':pk': DB_TRADE_PREFIX + tradeId,
           },
           ExclusiveStartKey: lastEvaluatedKey,
+          ConsistentRead: options.consistentRead,
         });
 
         items.push(...queryResult.Items);
@@ -69,7 +73,10 @@ export class DynamoDbTradeRepo implements TradeRepo {
     }
   }
 
-  async findTradeByOwnerId(ownerId: string): Promise<Result<Trade[]>> {
+  async findTradeByOwnerId(
+    ownerId: string,
+    options = { consistentRead: false },
+  ): Promise<Result<Trade[]>> {
     const items: Record<string, any>[] = [];
 
     let firstLoad = true;
@@ -88,6 +95,7 @@ export class DynamoDbTradeRepo implements TradeRepo {
           IndexName: 'GSI1',
           ExclusiveStartKey: lastEvaluatedKey,
           ScanIndexForward: false,
+          ConsistentRead: options.consistentRead,
         });
 
         items.push(...queryResult.Items);
@@ -97,7 +105,9 @@ export class DynamoDbTradeRepo implements TradeRepo {
       }
 
       const findByIdPromises = items.map((item) => {
-        return this.findById(item.tradeId);
+        return this.findById(item.tradeId, {
+          consistentRead: options.consistentRead,
+        });
       });
 
       const findByIdResults = await Promise.all(findByIdPromises);
@@ -111,7 +121,10 @@ export class DynamoDbTradeRepo implements TradeRepo {
     }
   }
 
-  async findTradeByTraderId(traderId: string): Promise<Result<Trade[]>> {
+  async findTradeByTraderId(
+    traderId: string,
+    options = { consistentRead: false },
+  ): Promise<Result<Trade[]>> {
     const items: Record<string, any>[] = [];
 
     let firstLoad = true;
@@ -130,6 +143,7 @@ export class DynamoDbTradeRepo implements TradeRepo {
           IndexName: 'GSI1',
           ExclusiveStartKey: lastEvaluatedKey,
           ScanIndexForward: false,
+          ConsistentRead: options.consistentRead,
         });
 
         items.push(...queryResult.Items);
@@ -139,7 +153,9 @@ export class DynamoDbTradeRepo implements TradeRepo {
       }
 
       const findByIdPromises = items.map((item) => {
-        return this.findById(item.tradeId);
+        return this.findById(item.tradeId, {
+          consistentRead: options.consistentRead,
+        });
       });
 
       const findByIdResults = await Promise.all(findByIdPromises);
@@ -154,7 +170,10 @@ export class DynamoDbTradeRepo implements TradeRepo {
     }
   }
 
-  async findTradeByBookId(bookId: string): Promise<Result<Trade[]>> {
+  async findTradeByBookId(
+    bookId: string,
+    options = { consistentRead: false },
+  ): Promise<Result<Trade[]>> {
     const items: Record<string, any>[] = [];
 
     let firstLoad = true;
@@ -173,6 +192,7 @@ export class DynamoDbTradeRepo implements TradeRepo {
           IndexName: 'GSI1',
           ExclusiveStartKey: lastEvaluatedKey,
           ScanIndexForward: false,
+          ConsistentRead: options.consistentRead,
         });
 
         items.push(...queryResult.Items);
@@ -182,7 +202,9 @@ export class DynamoDbTradeRepo implements TradeRepo {
       }
 
       const findByIdPromises = items.map((item) => {
-        return this.findById(item.tradeId);
+        return this.findById(item.tradeId, {
+          consistentRead: options.consistentRead,
+        });
       });
 
       const findByIdResults = await Promise.all(findByIdPromises);
@@ -196,9 +218,14 @@ export class DynamoDbTradeRepo implements TradeRepo {
     }
   }
 
-  async findPendingTradeCountByBookId(bookId: string): Promise<Result<number>> {
+  async findPendingTradeCountByBookId(
+    bookId: string,
+    options = { consistentRead: false },
+  ): Promise<Result<number>> {
     try {
-      const findResult = await this.findTradeByBookId(bookId);
+      const findResult = await this.findTradeByBookId(bookId, {
+        consistentRead: options.consistentRead,
+      });
 
       if (findResult.isSuccess) {
         const entities = findResult.getValue();
@@ -217,7 +244,9 @@ export class DynamoDbTradeRepo implements TradeRepo {
     }
   }
 
-  async findAcceptedTrade(): Promise<Result<Trade[]>> {
+  async findAcceptedTrade(
+    options = { consistentRead: false },
+  ): Promise<Result<Trade[]>> {
     const items: Record<string, any>[] = [];
 
     let firstLoad = true;
@@ -236,6 +265,7 @@ export class DynamoDbTradeRepo implements TradeRepo {
           IndexName: 'GSI1',
           ExclusiveStartKey: lastEvaluatedKey,
           ScanIndexForward: false,
+          ConsistentRead: options.consistentRead,
         });
 
         items.push(...queryResult.Items);
@@ -247,7 +277,9 @@ export class DynamoDbTradeRepo implements TradeRepo {
       console.log(items);
 
       const findByIdPromises = items.map((item) => {
-        return this.findById(item.id);
+        return this.findById(item.id, {
+          consistentRead: options.consistentRead,
+        });
       });
 
       const findByIdResults = await Promise.all(findByIdPromises);
@@ -309,6 +341,8 @@ export class DynamoDbTradeRepo implements TradeRepo {
           };
         }),
       );
+
+      // reject all trades that are not accepted
     }
 
     const batchWritePromises = [];

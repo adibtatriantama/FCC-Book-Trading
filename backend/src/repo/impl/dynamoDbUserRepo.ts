@@ -15,7 +15,10 @@ const ddbDoc = DynamoDBDocument.from(ddbclient, {
 });
 
 export class DynamoDbUserRepo implements UserRepo {
-  async findById(userId: string): Promise<Result<User>> {
+  async findById(
+    userId: string,
+    options = { consistentRead: false },
+  ): Promise<Result<User>> {
     let getResult;
 
     try {
@@ -25,6 +28,7 @@ export class DynamoDbUserRepo implements UserRepo {
           PK: `${DB_USER_PREFIX}${userId}`,
           SK: DB_METADATA,
         },
+        ConsistentRead: options.consistentRead,
       });
     } catch (error) {
       console.error(error);
@@ -42,7 +46,10 @@ export class DynamoDbUserRepo implements UserRepo {
     return Result.ok(user);
   }
 
-  async batchFindById(userIds: string[]): Promise<Result<User[]>> {
+  async batchFindById(
+    userIds: string[],
+    options = { consistentRead: false },
+  ): Promise<Result<User[]>> {
     if (userIds.length > 100) {
       return Result.fail('Too many users');
     }
@@ -57,6 +64,7 @@ export class DynamoDbUserRepo implements UserRepo {
         RequestItems: {
           [process.env.TABLE_NAME]: {
             Keys: keys,
+            ConsistentRead: options.consistentRead,
           },
         },
       });

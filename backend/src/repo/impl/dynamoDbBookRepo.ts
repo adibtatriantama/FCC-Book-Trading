@@ -15,7 +15,10 @@ const ddbDoc = DynamoDBDocument.from(ddbclient, {
 });
 
 export class DynamoDbBookRepo implements BookRepo {
-  async findById(bookId: string): Promise<Result<Book>> {
+  async findById(
+    bookId: string,
+    options = { consistentRead: false },
+  ): Promise<Result<Book>> {
     try {
       const getResult = await ddbDoc.get({
         TableName: process.env.TABLE_NAME,
@@ -23,6 +26,7 @@ export class DynamoDbBookRepo implements BookRepo {
           PK: DB_BOOK,
           SK: DB_BOOK_PREFIX + bookId,
         },
+        ConsistentRead: options.consistentRead,
       });
 
       const item = getResult.Item;
@@ -40,7 +44,10 @@ export class DynamoDbBookRepo implements BookRepo {
     }
   }
 
-  async batchFindById(bookIds: string[]): Promise<Result<Book[]>> {
+  async batchFindById(
+    bookIds: string[],
+    options = { consistentRead: false },
+  ): Promise<Result<Book[]>> {
     if (bookIds.length > 100) {
       return Result.fail('Too many books');
     }
@@ -55,6 +62,7 @@ export class DynamoDbBookRepo implements BookRepo {
         RequestItems: {
           [process.env.TABLE_NAME]: {
             Keys: keys,
+            ConsistentRead: options.consistentRead,
           },
         },
       });
@@ -74,7 +82,10 @@ export class DynamoDbBookRepo implements BookRepo {
     }
   }
 
-  async findByUserId(userId: string): Promise<Result<Book[]>> {
+  async findByUserId(
+    userId: string,
+    options = { consistentRead: false },
+  ): Promise<Result<Book[]>> {
     const entities: Book[] = [];
 
     let firstLoad = true;
@@ -93,6 +104,7 @@ export class DynamoDbBookRepo implements BookRepo {
           IndexName: 'GSI1',
           ScanIndexForward: false,
           ExclusiveStartKey: lastEvaluatedKey,
+          ConsistentRead: options.consistentRead,
         });
 
         const items = queryResult.Items;
@@ -110,7 +122,9 @@ export class DynamoDbBookRepo implements BookRepo {
     }
   }
 
-  async findRecent(): Promise<Result<Book[]>> {
+  async findRecent(
+    options = { consistentRead: false },
+  ): Promise<Result<Book[]>> {
     const entities: Book[] = [];
 
     let firstLoad = true;
@@ -127,6 +141,7 @@ export class DynamoDbBookRepo implements BookRepo {
           },
           ScanIndexForward: false,
           ExclusiveStartKey: lastEvaluatedKey,
+          ConsistentRead: options.consistentRead,
         });
 
         const items = queryResult.Items;
