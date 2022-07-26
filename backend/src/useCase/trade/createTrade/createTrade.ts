@@ -47,12 +47,14 @@ export class CreateTrade
       request.ownerId,
       request.traderId,
     ]);
-    const batchFindOwnerBooksPromise = await this.bookRepo.batchFindById([
-      ...request.ownerBookIds,
-    ]);
-    const batchFindTraderBooksPromise = await this.bookRepo.batchFindById([
-      ...request.traderBookIds,
-    ]);
+    const batchFindOwnerBooksPromise = await this.bookRepo.batchFindById(
+      [...request.ownerBookIds],
+      { consistentRead: true },
+    );
+    const batchFindTraderBooksPromise = await this.bookRepo.batchFindById(
+      [...request.traderBookIds],
+      { consistentRead: true },
+    );
 
     const [
       batchFindUserResult,
