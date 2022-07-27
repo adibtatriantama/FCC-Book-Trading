@@ -117,7 +117,7 @@
 								</thead>
 								<tbody class="bg-white divide-y divide-gray-300">
 									{#each $addedBooksMappedByOwner[userId].books as book}
-										<tr class="whitespace-nowrap">
+										<tr>
 											<td class="px-6 py-4">
 												<div class="text-sm text-gray-700">{book.title}</div>
 											</td>
@@ -180,7 +180,7 @@
 							</thead>
 							<tbody class="bg-white divide-y divide-gray-300">
 								{#each $filteredBooks as book}
-									<tr class="whitespace-nowrap">
+									<tr>
 										<td class="px-6 py-4">
 											<div class="text-sm text-gray-700">{book.title}</div>
 										</td>

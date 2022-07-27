@@ -85,7 +85,7 @@
 									</thead>
 									<tbody class="bg-white divide-y divide-gray-300">
 										{#each trade.ownerBooks as book}
-											<tr class="whitespace-nowrap">
+											<tr>
 												<td class="px-6 py-4">
 													<div class="text-sm text-gray-700">{book.title}</div>
 												</td>
@@ -118,7 +118,7 @@
 									</thead>
 									<tbody class="bg-white divide-y divide-gray-300">
 										{#each trade.traderBooks as book}
-											<tr class="whitespace-nowrap">
+											<tr>
 												<td class="px-6 py-4">
 													<div class="text-sm text-gray-700">{book.title}</div>
 												</td>
