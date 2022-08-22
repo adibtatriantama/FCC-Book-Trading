@@ -3,7 +3,7 @@ import { Result } from 'src/core/result';
 import { EntityNotFoundError, UnexpectedError } from 'src/core/useCaseError';
 import { User } from 'src/domain/user';
 import { UserRepo } from 'src/repo/userRepo';
-import { buildMockUserRepo } from 'src/test/helper';
+import { createMock } from 'ts-auto-mock';
 import { UpdateUser, UpdateUserRequest } from './updateUser';
 
 let useCase: UpdateUser;
@@ -32,7 +32,7 @@ const dummyUser = User.create(
 
 describe('UpdateUser', () => {
   beforeEach(() => {
-    mockUserRepo = buildMockUserRepo({
+    mockUserRepo = createMock<UserRepo>({
       findById: jest.fn().mockResolvedValue(Result.ok(dummyUser)),
       save: jest.fn().mockResolvedValue(Result.ok()),
     });
@@ -54,7 +54,7 @@ describe('UpdateUser', () => {
 
   describe('when user is not found', () => {
     beforeEach(() => {
-      mockUserRepo = buildMockUserRepo({
+      mockUserRepo = createMock<UserRepo>({
         findById: jest.fn().mockResolvedValue(Result.fail(NOT_FOUND)),
         save: jest.fn(),
       });
@@ -71,7 +71,7 @@ describe('UpdateUser', () => {
 
   describe('when unable to save', () => {
     beforeEach(() => {
-      mockUserRepo = buildMockUserRepo({
+      mockUserRepo = createMock<UserRepo>({
         findById: jest.fn().mockResolvedValue(Result.ok(dummyUser)),
         save: jest.fn().mockResolvedValue(Result.fail(NOT_FOUND)),
       });
@@ -88,7 +88,7 @@ describe('UpdateUser', () => {
 
   describe('when unable to check if user with same id is already exist', () => {
     beforeEach(() => {
-      mockUserRepo = buildMockUserRepo({
+      mockUserRepo = createMock<UserRepo>({
         findById: jest.fn().mockResolvedValue(Result.fail('other error')),
         save: jest.fn(),
       });

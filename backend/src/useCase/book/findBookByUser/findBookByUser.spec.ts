@@ -3,7 +3,7 @@ import { UnexpectedError } from 'src/core/useCaseError';
 import { Book } from 'src/domain/book';
 import { UserDetails } from 'src/domain/userDetails';
 import { BookRepo } from 'src/repo/bookRepo';
-import { buildMockBookRepo } from 'src/test/helper';
+import { createMock } from 'ts-auto-mock';
 import { FindBookByUser, FindBookByUserRequest } from './findBookByUser';
 
 const dummyUser = UserDetails.create({
@@ -24,7 +24,7 @@ let mockBookRepo: BookRepo;
 let request: FindBookByUserRequest;
 
 beforeEach(() => {
-  mockBookRepo = buildMockBookRepo({
+  mockBookRepo = createMock<BookRepo>({
     findByUserId: jest.fn().mockResolvedValue(Result.ok([dummyBook])),
   });
 
@@ -45,7 +45,7 @@ describe('FindBookByUser', () => {
 
   describe('when unable to find books', () => {
     beforeEach(() => {
-      mockBookRepo = buildMockBookRepo({
+      mockBookRepo = createMock<BookRepo>({
         findByUserId: jest.fn().mockResolvedValue(Result.fail('any')),
       });
 

@@ -4,7 +4,7 @@ import { Book } from 'src/domain/book';
 import { UserDetails } from 'src/domain/userDetails';
 import { BookRepo } from 'src/repo/bookRepo';
 import { UserRepo } from 'src/repo/userRepo';
-import { buildMockBookRepo, buildMockUserRepo } from 'src/test/helper';
+import { createMock } from 'ts-auto-mock';
 import { AddBook, AddBookRequest } from './addBook';
 
 let useCase: AddBook;
@@ -32,10 +32,10 @@ const dummyRequest: AddBookRequest = {
 
 describe('AddBook', () => {
   beforeEach(() => {
-    mockBookRepo = buildMockBookRepo({
+    mockBookRepo = createMock<BookRepo>({
       save: jest.fn().mockResolvedValue(Result.ok(dummyBook)),
     });
-    mockUserRepo = buildMockUserRepo({
+    mockUserRepo = createMock<UserRepo>({
       findById: jest.fn().mockResolvedValue(Result.ok(dummyUser)),
     });
 
@@ -57,10 +57,10 @@ describe('AddBook', () => {
 
   describe('when unable to save', () => {
     beforeEach(() => {
-      mockBookRepo = buildMockBookRepo({
+      mockBookRepo = createMock<BookRepo>({
         save: jest.fn().mockResolvedValue(Result.fail('error')),
       });
-      mockUserRepo = buildMockUserRepo({
+      mockUserRepo = createMock<UserRepo>({
         findById: jest.fn().mockResolvedValue(Result.ok(dummyUser)),
       });
 
@@ -77,11 +77,11 @@ describe('AddBook', () => {
 
   describe('when unable to get user', () => {
     beforeEach(() => {
-      mockBookRepo = buildMockBookRepo({
+      mockBookRepo = createMock<BookRepo>({
         save: jest.fn().mockResolvedValue(Result.ok(dummyBook)),
       });
 
-      mockUserRepo = buildMockUserRepo({
+      mockUserRepo = createMock<UserRepo>({
         findById: jest.fn().mockResolvedValue(Result.fail('any')),
       });
 

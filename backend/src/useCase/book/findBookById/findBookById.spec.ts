@@ -4,7 +4,7 @@ import { EntityNotFoundError, UnexpectedError } from 'src/core/useCaseError';
 import { Book } from 'src/domain/book';
 import { UserDetails } from 'src/domain/userDetails';
 import { BookRepo } from 'src/repo/bookRepo';
-import { buildMockBookRepo } from 'src/test/helper';
+import { createMock } from 'ts-auto-mock';
 import { FindBookById } from './findBookById';
 
 const dummyUser = UserDetails.create({
@@ -24,7 +24,7 @@ let mockBookRepo: BookRepo;
 
 describe('FindBookById', () => {
   beforeEach(() => {
-    mockBookRepo = buildMockBookRepo({
+    mockBookRepo = createMock<BookRepo>({
       findById: jest.fn().mockResolvedValue(Result.ok(dummyBook)),
     });
 
@@ -44,7 +44,7 @@ describe('FindBookById', () => {
 
   describe('when entity not found', () => {
     beforeEach(() => {
-      mockBookRepo = buildMockBookRepo({
+      mockBookRepo = createMock<BookRepo>({
         findById: jest.fn().mockResolvedValue(Result.fail(NOT_FOUND)),
       });
 
@@ -65,7 +65,7 @@ describe('FindBookById', () => {
 
   describe('when unable to find the entity', () => {
     beforeEach(() => {
-      mockBookRepo = buildMockBookRepo({
+      mockBookRepo = createMock<BookRepo>({
         findById: jest.fn().mockResolvedValue(Result.fail('any')),
       });
 

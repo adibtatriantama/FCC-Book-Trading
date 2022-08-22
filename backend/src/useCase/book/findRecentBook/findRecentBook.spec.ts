@@ -3,7 +3,7 @@ import { UnexpectedError } from 'src/core/useCaseError';
 import { Book } from 'src/domain/book';
 import { UserDetails } from 'src/domain/userDetails';
 import { BookRepo } from 'src/repo/bookRepo';
-import { buildMockBookRepo } from 'src/test/helper';
+import { createMock } from 'ts-auto-mock';
 import { FindRecentBook } from './findRecentBook';
 
 const dummyUser = UserDetails.create({
@@ -22,7 +22,7 @@ let useCase: FindRecentBook;
 let mockBookRepo: BookRepo;
 
 beforeEach(() => {
-  mockBookRepo = buildMockBookRepo({
+  mockBookRepo = createMock<BookRepo>({
     findRecent: jest.fn().mockResolvedValue(Result.ok([dummyBook])),
   });
 
@@ -39,7 +39,7 @@ describe('FindRecentBook', () => {
 
   describe('when unable to find books', () => {
     beforeEach(() => {
-      mockBookRepo = buildMockBookRepo({
+      mockBookRepo = createMock<BookRepo>({
         findRecent: jest.fn().mockResolvedValue(Result.fail('any')),
       });
 

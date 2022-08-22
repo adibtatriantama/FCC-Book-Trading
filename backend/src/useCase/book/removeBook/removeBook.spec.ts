@@ -5,7 +5,7 @@ import { Book } from 'src/domain/book';
 import { UserDetails } from 'src/domain/userDetails';
 import { BookRepo } from 'src/repo/bookRepo';
 import { TradeRepo } from 'src/repo/tradeRepo';
-import { buildMockBookRepo, buildMockTradeRepo } from 'src/test/helper';
+import { createMock } from 'ts-auto-mock';
 import {
   RemoveBook,
   RemoveBookRequest,
@@ -34,11 +34,11 @@ const dummyBook = Book.create(
 let request: RemoveBookRequest;
 
 beforeEach(() => {
-  mockBookRepo = buildMockBookRepo({
+  mockBookRepo = createMock<BookRepo>({
     findById: jest.fn().mockResolvedValue(Result.ok(dummyBook)),
     remove: jest.fn().mockResolvedValue(Result.ok()),
   });
-  mockTradeRepo = buildMockTradeRepo({
+  mockTradeRepo = createMock<TradeRepo>({
     findPendingTradeCountByBookId: jest.fn().mockResolvedValue(Result.ok(0)),
   });
 
@@ -65,7 +65,7 @@ describe('RemoveBook', () => {
 
   describe('when book not found', () => {
     beforeEach(() => {
-      mockBookRepo = buildMockBookRepo({
+      mockBookRepo = createMock<BookRepo>({
         findById: jest.fn().mockResolvedValue(Result.fail(NOT_FOUND)),
       });
 
@@ -82,7 +82,7 @@ describe('RemoveBook', () => {
 
   describe('when unable to find book', () => {
     beforeEach(() => {
-      mockBookRepo = buildMockBookRepo({
+      mockBookRepo = createMock<BookRepo>({
         findById: jest.fn().mockResolvedValue(Result.fail('any')),
       });
 
@@ -115,7 +115,7 @@ describe('RemoveBook', () => {
 
   describe('when unable to remove', () => {
     beforeEach(() => {
-      mockBookRepo = buildMockBookRepo({
+      mockBookRepo = createMock<BookRepo>({
         findById: jest.fn().mockResolvedValue(Result.ok(dummyBook)),
         remove: jest.fn().mockResolvedValue(Result.fail('any')),
       });
@@ -133,7 +133,7 @@ describe('RemoveBook', () => {
 
   describe('when book is involved in pending trade', () => {
     beforeEach(() => {
-      mockTradeRepo = buildMockTradeRepo({
+      mockTradeRepo = createMock<TradeRepo>({
         findPendingTradeCountByBookId: jest
           .fn()
           .mockResolvedValue(Result.ok(1)),
@@ -152,7 +152,7 @@ describe('RemoveBook', () => {
 
   describe('when unable to find pending trade count', () => {
     beforeEach(() => {
-      mockTradeRepo = buildMockTradeRepo({
+      mockTradeRepo = createMock<TradeRepo>({
         findPendingTradeCountByBookId: jest
           .fn()
           .mockResolvedValue(Result.fail('any')),

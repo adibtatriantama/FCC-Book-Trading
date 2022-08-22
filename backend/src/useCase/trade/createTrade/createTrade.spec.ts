@@ -1,16 +1,12 @@
 import { Result } from 'src/core/result';
 import { UnexpectedError } from 'src/core/useCaseError';
-import { Book, BookProps } from 'src/domain/book';
+import { Book } from 'src/domain/book';
 import { Trade } from 'src/domain/trade';
 import { UserDetails } from 'src/domain/userDetails';
 import { BookRepo } from 'src/repo/bookRepo';
 import { TradeRepo } from 'src/repo/tradeRepo';
 import { UserRepo } from 'src/repo/userRepo';
-import {
-  buildMockBookRepo,
-  buildMockTradeRepo,
-  buildMockUserRepo,
-} from 'src/test/helper';
+import { createMock } from 'ts-auto-mock';
 import {
   CreateTrade,
   CreateTradeRequest,
@@ -28,7 +24,7 @@ const dummyTrader = UserDetails.create({
   nickname: 'trader',
 }).getValue();
 
-const somebodyElse = UserDetails.create({
+const dummyOther = UserDetails.create({
   id: 'unknownId',
   nickname: 'unknown',
 }).getValue();
@@ -43,21 +39,9 @@ let dummyBook2: Book;
 
 let request: CreateTradeRequest;
 
-const buildBook = (params?: Partial<BookProps>, id?: string) => {
-  return Book.create(
-    {
-      title: params.title ?? 'title',
-      author: params.author ?? 'author',
-      description: params.description ?? 'descr',
-      owner: params.owner ?? dummyOwner,
-    },
-    id,
-  ).getValue();
-};
-
 beforeEach(() => {
-  dummyBook1 = buildBook({ title: 'dummyBook 1', owner: dummyOwner }, 'book1');
-  dummyBook2 = buildBook({ title: 'dummyBook 2', owner: dummyTrader }, 'book2');
+  dummyBook1 = createMock<Book>({ owner: dummyOwner });
+  dummyBook2 = createMock<Book>({ owner: dummyTrader });
   const dummyTrade = Trade.create({
     owner: dummyOwner,
     trader: dummyTrader,
@@ -67,16 +51,16 @@ beforeEach(() => {
     createdAt: new Date(),
   }).getValue();
 
-  mockTradeRepo = buildMockTradeRepo({
+  mockTradeRepo = createMock<TradeRepo>({
     save: jest.fn().mockResolvedValue(Result.ok(dummyTrade)),
   });
-  mockBookRepo = buildMockBookRepo({
+  mockBookRepo = createMock<BookRepo>({
     batchFindById: jest
       .fn()
       .mockResolvedValueOnce(Result.ok([dummyBook1]))
       .mockResolvedValueOnce(Result.ok([dummyBook2])),
   });
-  mockUserRepo = buildMockUserRepo({
+  mockUserRepo = createMock<UserRepo>({
     batchFindById: jest
       .fn()
       .mockResolvedValue(Result.ok([dummyOwner, dummyTrader])),
@@ -108,7 +92,7 @@ describe('CreateTrade', () => {
 
   describe('when unable to find user', () => {
     beforeEach(() => {
-      mockUserRepo = buildMockUserRepo({
+      mockUserRepo = createMock<UserRepo>({
         batchFindById: jest.fn().mockResolvedValue(Result.fail('any')),
       });
 
@@ -125,7 +109,7 @@ describe('CreateTrade', () => {
 
   describe('when unable to find book', () => {
     beforeEach(() => {
-      mockBookRepo = buildMockBookRepo({
+      mockBookRepo = createMock<BookRepo>({
         batchFindById: jest.fn().mockResolvedValue(Result.fail('any')),
       });
 
@@ -142,11 +126,8 @@ describe('CreateTrade', () => {
 
   describe('when owner books are no longer his', () => {
     beforeEach(() => {
-      dummyBook1 = buildBook(
-        { title: 'dummyBook 1', owner: somebodyElse },
-        'book1',
-      );
-      mockBookRepo = buildMockBookRepo({
+      dummyBook1 = createMock<Book>({ owner: dummyOther });
+      mockBookRepo = createMock<BookRepo>({
         batchFindById: jest
           .fn()
           .mockResolvedValueOnce(Result.ok([dummyBook1]))
@@ -184,11 +165,8 @@ describe('CreateTrade', () => {
 
   describe('when trader books are no longer his', () => {
     beforeEach(() => {
-      dummyBook2 = buildBook(
-        { title: 'dummyBook 1', owner: somebodyElse },
-        'book1',
-      );
-      mockBookRepo = buildMockBookRepo({
+      dummyBook2 = createMock<Book>({ owner: dummyOther });
+      mockBookRepo = createMock<BookRepo>({
         batchFindById: jest
           .fn()
           .mockResolvedValueOnce(Result.ok([dummyBook1]))
@@ -208,7 +186,7 @@ describe('CreateTrade', () => {
 
   describe('when unable to save', () => {
     beforeEach(() => {
-      mockTradeRepo = buildMockTradeRepo({
+      mockTradeRepo = createMock<TradeRepo>({
         save: jest.fn().mockResolvedValue(Result.fail('any')),
       });
 

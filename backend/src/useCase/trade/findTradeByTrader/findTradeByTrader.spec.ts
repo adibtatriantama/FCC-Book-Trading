@@ -1,10 +1,10 @@
 import { Result } from 'src/core/result';
 import { UnexpectedError } from 'src/core/useCaseError';
-import { Book, BookProps } from 'src/domain/book';
+import { Book } from 'src/domain/book';
 import { Trade } from 'src/domain/trade';
 import { UserDetails } from 'src/domain/userDetails';
 import { TradeRepo } from 'src/repo/tradeRepo';
-import { buildMockTradeRepo } from 'src/test/helper';
+import { createMock } from 'ts-auto-mock';
 import {
   FindTradeByTrader,
   FindTradeByTraderRequest,
@@ -29,31 +29,18 @@ let dummyTrade: Trade;
 
 let request: FindTradeByTraderRequest;
 
-const buildBook = (params?: Partial<BookProps>, id?: string) => {
-  return Book.create(
-    {
-      title: params.title ?? 'title',
-      author: params.author ?? 'author',
-      description: params.description ?? 'descr',
-      owner: params.owner ?? dummyOwner,
-    },
-    id,
-  ).getValue();
-};
-
 beforeEach(() => {
-  dummyBook1 = buildBook({ title: 'dummyBook 1', owner: dummyOwner }, 'book1');
-  dummyBook2 = buildBook({ title: 'dummyBook 2', owner: dummyTrader }, 'book2');
-  dummyTrade = Trade.create({
+  dummyBook1 = createMock<Book>({ owner: dummyOwner });
+  dummyBook2 = createMock<Book>({ owner: dummyTrader });
+  dummyTrade = createMock<Trade>({
     owner: dummyOwner,
     trader: dummyTrader,
     ownerBooks: [dummyBook1],
     traderBooks: [dummyBook2],
     status: 'pending',
-    createdAt: new Date(),
-  }).getValue();
+  });
 
-  mockTradeRepo = buildMockTradeRepo({
+  mockTradeRepo = createMock<TradeRepo>({
     findTradeByTraderId: jest.fn().mockResolvedValue(Result.ok([dummyTrade])),
   });
 
@@ -74,7 +61,7 @@ describe('Find Trade by Trader', () => {
 
   describe('when unable to find trade', () => {
     beforeEach(() => {
-      mockTradeRepo = buildMockTradeRepo({
+      mockTradeRepo = createMock<TradeRepo>({
         findTradeByTraderId: jest.fn().mockResolvedValue(Result.fail('any')),
       });
 

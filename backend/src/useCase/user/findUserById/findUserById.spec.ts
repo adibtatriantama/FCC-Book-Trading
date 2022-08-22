@@ -3,7 +3,7 @@ import { Result } from 'src/core/result';
 import { EntityNotFoundError, UnexpectedError } from 'src/core/useCaseError';
 import { User } from 'src/domain/user';
 import { UserRepo } from 'src/repo/userRepo';
-import { buildMockUserRepo } from 'src/test/helper';
+import { createMock } from 'ts-auto-mock';
 import { FindUserById } from './findUserById';
 
 const dummyEntity = User.create(
@@ -16,7 +16,7 @@ let mockUserRepo: UserRepo;
 
 describe('FindUserById', () => {
   beforeEach(() => {
-    mockUserRepo = buildMockUserRepo({
+    mockUserRepo = createMock<UserRepo>({
       findById: jest.fn().mockResolvedValue(Result.ok(dummyEntity)),
     });
 
@@ -34,7 +34,7 @@ describe('FindUserById', () => {
 
   describe('when entity not found', () => {
     beforeEach(() => {
-      mockUserRepo = buildMockUserRepo({
+      mockUserRepo = createMock<UserRepo>({
         findById: jest.fn().mockResolvedValue(Result.fail(NOT_FOUND)),
       });
 
@@ -53,7 +53,7 @@ describe('FindUserById', () => {
 
   describe('when unable to find the entity', () => {
     beforeEach(() => {
-      mockUserRepo = buildMockUserRepo({
+      mockUserRepo = createMock<UserRepo>({
         findById: jest.fn().mockResolvedValue(Result.fail('any')),
       });
 
