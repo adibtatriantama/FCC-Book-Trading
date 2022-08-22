@@ -39,7 +39,10 @@
     "@aws-sdk/lib-dynamodb": "3.154.0",
     "aws-sdk": "2.1199.0",
     "axios": "0.27.2",
+    "jest-ts-auto-mock": "2.1.0",
     "jwk-to-pem": "2.0.5",
+    "ts-auto-mock": "3.6.2",
+    "ttypescript": "1.5.13",
     "ulid": "2.3.0"
   }
 }
