@@ -7,7 +7,12 @@ import { createMock } from 'ts-auto-mock';
 import { FindUserById } from './findUserById';
 
 const dummyEntity = User.create(
-  { nickname: 'tester', email: 'tester@mail.com' },
+  {
+    nickname: 'tester',
+    email: 'tester@mail.com',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
   'userId',
 );
 

@@ -26,6 +26,8 @@ const dummyUser = User.create(
       state: 'state',
       city: 'city',
     },
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   'testerId',
 );

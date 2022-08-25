@@ -15,7 +15,12 @@ const dummyRequest = {
   email: 'tester@mail.com',
 };
 const dummyUser = User.create(
-  { nickname: 'tester', email: 'tester@mail.com' },
+  {
+    nickname: 'tester',
+    email: 'tester@mail.com',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
   'testerId',
 );
 

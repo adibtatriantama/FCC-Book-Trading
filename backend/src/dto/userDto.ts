@@ -1,3 +1,5 @@
 import { UserProps } from 'src/domain/user';
 
-export type UserDto = Omit<UserProps, 'email'> & { id: string };
+export type UserDto = Omit<UserProps, 'email' | 'createdAt' | 'updatedAt'> & {
+  id: string;
+};

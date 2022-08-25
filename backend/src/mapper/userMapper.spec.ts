@@ -13,6 +13,8 @@ describe('UserMapper', () => {
             state: 'state',
             city: 'city',
           },
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         'tester1',
       ).getValue();
@@ -40,6 +42,8 @@ describe('UserMapper', () => {
             state: 'state',
             city: 'city',
           },
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         'tester1',
       ).getValue();

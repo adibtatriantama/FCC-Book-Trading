@@ -39,6 +39,8 @@ export class UpdateUser
         nickname: request.nickname ?? existingUser.nickname,
         email: existingUser.email,
         address: request.address ?? existingUser.address,
+        createdAt: existingUser.createdAt,
+        updatedAt: new Date(),
       },
       request.id,
     ).getValue();

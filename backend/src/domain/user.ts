@@ -7,6 +7,8 @@ export type UserProps = {
     city: string;
     state: string;
   };
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export class User {
@@ -26,5 +28,13 @@ export class User {
 
   get address(): { city: string; state: string } {
     return this._props.address || { city: '', state: '' };
+  }
+
+  get createdAt(): Date {
+    return this._props.createdAt;
+  }
+
+  get updatedAt(): Date {
+    return this._props.updatedAt;
   }
 }

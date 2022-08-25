@@ -34,8 +34,14 @@ export class CreateUser
     } else if (findExistingUserResult.getErrorValue() !== NOT_FOUND) {
       return left(new UnexpectedError());
     }
+    const date = new Date();
     const user = User.create(
-      { nickname: request.nickname, email: request.email },
+      {
+        nickname: request.nickname,
+        email: request.email,
+        createdAt: date,
+        updatedAt: date,
+      },
       request.id,
     ).getValue();
 
