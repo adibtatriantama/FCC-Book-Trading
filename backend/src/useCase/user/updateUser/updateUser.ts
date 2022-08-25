@@ -11,7 +11,9 @@ import { UserDto } from 'src/dto/userDto';
 import { UserMapper } from 'src/mapper/userMapper';
 import { UserRepo } from 'src/repo/userRepo';
 
-export type UpdateUserRequest = Omit<UserProps, 'email'> & { id: string };
+export type UpdateUserRequest = Partial<Omit<UserProps, 'email'>> & {
+  id: string;
+};
 
 export type UpdateUserResponse = Either<UseCaseError, UserDto>;
 
