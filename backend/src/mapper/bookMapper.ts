@@ -11,6 +11,9 @@ export class BookMapper {
       author: book.author,
       description: book.description,
       owner: UserDetailsMapper.toDto(book.owner),
+      createdAt: book.createdAt.toISOString(),
+      updatedAt: book.updatedAt.toISOString(),
+      addedAt: book.addedAt.toISOString(),
     };
   }
 
