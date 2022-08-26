@@ -1,7 +1,7 @@
 import { NOT_FOUND } from 'src/constant';
 import { Result } from 'src/core/result';
 import { EntityNotFoundError, UnexpectedError } from 'src/core/useCaseError';
-import { Book } from 'src/domain/book';
+import { BookDetails } from 'src/domain/bookDetails';
 import { Trade } from 'src/domain/trade';
 
 import { UserDetails } from 'src/domain/userDetails';
@@ -22,15 +22,15 @@ const dummyTrader = UserDetails.create({
 let useCase: FindTradeById;
 let mockTradeRepo: TradeRepo;
 
-let dummyBook1: Book;
-let dummyBook2: Book;
+let dummyBook1: BookDetails;
+let dummyBook2: BookDetails;
 let dummyTrade: Trade;
 
 let request: FindTradeByIdRequest;
 
 beforeEach(() => {
-  dummyBook1 = createMock<Book>({ owner: dummyOwner });
-  dummyBook2 = createMock<Book>({ owner: dummyTrader });
+  dummyBook1 = createMock<BookDetails>({ owner: dummyOwner });
+  dummyBook2 = createMock<BookDetails>({ owner: dummyTrader });
   dummyTrade = createMock<Trade>({
     decider: dummyOwner,
     requester: dummyTrader,

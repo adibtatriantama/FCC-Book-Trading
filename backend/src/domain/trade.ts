@@ -1,13 +1,13 @@
 import { Result } from 'src/core/result';
 import { ulid } from 'ulid';
-import { Book } from './book';
+import { BookDetails } from './bookDetails';
 import { UserDetails } from './userDetails';
 
 export type TradeProps = {
   decider: UserDetails;
   requester: UserDetails;
-  deciderBooks: Book[];
-  requesterBook: Book[];
+  deciderBooks: BookDetails[];
+  requesterBooks: BookDetails[];
   status?: TradeStatus;
   createdAt: Date;
   updatedAt: Date;
@@ -53,12 +53,12 @@ export class Trade {
     return this._props.requester;
   }
 
-  get deciderBooks(): Book[] {
+  get deciderBooks(): BookDetails[] {
     return this._props.deciderBooks;
   }
 
-  get requesterBooks(): Book[] {
-    return this._props.requesterBook;
+  get requesterBooks(): BookDetails[] {
+    return this._props.requesterBooks;
   }
 
   get status(): TradeStatus {

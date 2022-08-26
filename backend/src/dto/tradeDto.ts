@@ -1,13 +1,13 @@
 import { TradeStatus } from 'src/domain/trade';
-import { BookDto } from './bookDto';
+import { BookDetailsDto } from './bookDetailsDto';
 import { UserDto } from './userDto';
 
 export type TradeDto = {
   id: string;
   decider: UserDto;
   requester: UserDto;
-  deciderBooks: BookDto[];
-  requesterBooks: BookDto[];
+  deciderBooks: BookDetailsDto[];
+  requesterBooks: BookDetailsDto[];
   status: TradeStatus;
   createdAt: string;
   updatedAt: string;

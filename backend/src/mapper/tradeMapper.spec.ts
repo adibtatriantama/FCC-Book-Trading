@@ -1,4 +1,4 @@
-import { Book, BookProps } from 'src/domain/book';
+import { BookDetails, BookDetailsProps } from 'src/domain/bookDetails';
 import { Trade } from 'src/domain/trade';
 import { UserDetails, UserDetailsProps } from 'src/domain/userDetails';
 import { TradeMapper } from './tradeMapper';
@@ -17,19 +17,14 @@ const buildUserDetails = (params?: Partial<UserDetailsProps>): UserDetails => {
   }).getValue();
 };
 
-const buildBook = (params?: Partial<BookProps>, id?: string) => {
-  return Book.create(
-    {
-      title: params.title ?? 'title',
-      author: params.author ?? 'author',
-      description: params.description ?? 'descr',
-      owner: params.owner,
-      createdAt: dummyDate,
-      updatedAt: dummyDate,
-      addedAt: dummyDate,
-    },
-    id,
-  ).getValue();
+const buildBook = (params?: Partial<BookDetailsProps>) => {
+  return BookDetails.create({
+    id: params.id,
+    title: params.title ?? 'title',
+    author: params.author ?? 'author',
+    description: params.description ?? 'descr',
+    owner: params.owner,
+  });
 };
 
 describe('TradeMapper', () => {
@@ -47,22 +42,18 @@ describe('TradeMapper', () => {
     const trade = Trade.create(
       {
         deciderBooks: [
-          buildBook(
-            {
-              title: 'book1',
-              owner,
-            },
-            'book1',
-          ),
+          buildBook({
+            id: 'book1',
+            title: 'book1',
+            owner,
+          }),
         ],
-        requesterBook: [
-          buildBook(
-            {
-              title: 'book2',
-              owner: trader,
-            },
-            'book2',
-          ),
+        requesterBooks: [
+          buildBook({
+            id: 'book2',
+            title: 'book2',
+            owner: trader,
+          }),
         ],
         status: 'rejected',
         createdAt: dummyDate,
@@ -107,9 +98,6 @@ describe('TradeMapper', () => {
               city: 'city',
             },
           },
-          createdAt: dummyIsoDate,
-          updatedAt: dummyIsoDate,
-          addedAt: dummyIsoDate,
         },
       ],
       requesterBooks: [
@@ -126,9 +114,6 @@ describe('TradeMapper', () => {
               city: 'city',
             },
           },
-          createdAt: dummyIsoDate,
-          updatedAt: dummyIsoDate,
-          addedAt: dummyIsoDate,
         },
       ],
       status: 'rejected',

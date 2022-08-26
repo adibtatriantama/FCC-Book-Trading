@@ -1,8 +1,6 @@
-import { Book } from './book';
+import { BookDetails } from './bookDetails';
 import { Trade } from './trade';
 import { UserDetails } from './userDetails';
-
-const date = new Date();
 
 const dummyOwner = UserDetails.create({
   nickname: 'owner',
@@ -23,36 +21,26 @@ const dummyTrader = UserDetails.create({
 }).getValue();
 
 const buildBook1 = () =>
-  Book.create(
-    {
-      title: 'book1',
-      author: 'author1',
-      description: 'description1',
-      owner: dummyOwner,
-      createdAt: date,
-      updatedAt: date,
-      addedAt: date,
-    },
-    'book1-id',
-  ).getValue();
+  BookDetails.create({
+    id: 'book1-id',
+    title: 'book1',
+    author: 'author1',
+    description: 'description1',
+    owner: dummyOwner,
+  });
 
 const buildBook2 = () =>
-  Book.create(
-    {
-      title: 'book2',
-      author: 'author2',
-      description: 'description2',
-      owner: dummyTrader,
-      createdAt: date,
-      updatedAt: date,
-      addedAt: date,
-    },
-    'book2-id',
-  ).getValue();
+  BookDetails.create({
+    id: 'book2-id',
+    title: 'book2',
+    author: 'author2',
+    description: 'description2',
+    owner: dummyTrader,
+  });
 
 describe('Trade', () => {
-  let book1: Book;
-  let book2: Book;
+  let book1: BookDetails;
+  let book2: BookDetails;
   let trade: Trade;
 
   describe('accept', () => {

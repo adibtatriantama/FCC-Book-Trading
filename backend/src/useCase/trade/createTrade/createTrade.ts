@@ -3,6 +3,7 @@ import { UseCase } from 'src/core/useCase';
 import { UnexpectedError, UseCaseError } from 'src/core/useCaseError';
 import { Trade } from 'src/domain/trade';
 import { TradeDto } from 'src/dto/tradeDto';
+import { BookMapper } from 'src/mapper/bookMapper';
 import { TradeMapper } from 'src/mapper/tradeMapper';
 import { UserMapper } from 'src/mapper/userMapper';
 import { BookRepo } from 'src/repo/bookRepo';
@@ -95,8 +96,8 @@ export class CreateTrade
       requester: UserMapper.toDetails(trader),
       createdAt: new Date(),
       updatedAt: new Date(),
-      deciderBooks: ownerBooks,
-      requesterBook: traderBooks,
+      deciderBooks: ownerBooks.map(BookMapper.toDetails),
+      requesterBooks: traderBooks.map(BookMapper.toDetails),
     }).getValue();
 
     const saveResult = await this.tradeRepo.save(trade);
