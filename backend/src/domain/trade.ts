@@ -95,14 +95,6 @@ export class Trade {
   }
 
   private transferBooksOwnership(): void {
-    for (const book of this.deciderBooks) {
-      book.transferOwnership(this.requester);
-    }
-
-    for (const book of this.requesterBooks) {
-      book.transferOwnership(this.decider);
-    }
-
     this.isBookOwnershipChanged = true;
   }
 

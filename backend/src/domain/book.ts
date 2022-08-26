@@ -13,8 +13,6 @@ export type BookProps = {
 };
 
 export class Book {
-  isOwnerChanged = false;
-
   private constructor(private _props: BookProps, public readonly id: string) {}
 
   static create(props: BookProps, id?: string): Result<Book> {
@@ -47,11 +45,5 @@ export class Book {
 
   get addedAt(): Date {
     return this._props.addedAt;
-  }
-
-  transferOwnership(newOwner: UserDetails): void {
-    this.isOwnerChanged = true;
-    this._props.addedAt = new Date();
-    this._props.owner = newOwner;
   }
 }

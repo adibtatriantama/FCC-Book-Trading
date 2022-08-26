@@ -82,11 +82,10 @@ describe('Trade', () => {
       expect(trade.status).toBe('accepted');
     });
 
-    it('should transfer books ownership', () => {
+    it('should flag bookOwnershipChanged', () => {
       trade.accept();
 
-      expect(book1.owner).toBe(dummyTrader);
-      expect(book2.owner).toBe(dummyOwner);
+      expect(trade.isBookOwnershipChanged).toBe(true);
     });
 
     describe("when status isn't pending", () => {
