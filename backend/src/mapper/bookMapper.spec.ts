@@ -14,12 +14,18 @@ const dummyUser = UserDetails.create({
 describe('BookMapper', () => {
   describe('toDto', () => {
     it('should map correctly', () => {
+      const date = new Date();
+      const dateString = date.toISOString();
+
       const book = Book.create(
         {
           title: 'title',
           author: 'author',
           description: 'descr',
           owner: dummyUser,
+          createdAt: date,
+          updatedAt: date,
+          addedAt: date,
         },
         'book1',
       ).getValue();
@@ -39,6 +45,9 @@ describe('BookMapper', () => {
             city: 'city',
           },
         },
+        createdAt: dateString,
+        updatedAt: dateString,
+        addedAt: dateString,
       });
     });
   });

@@ -6,6 +6,8 @@ import { BookRepo } from 'src/repo/bookRepo';
 import { createMock } from 'ts-auto-mock';
 import { FindRecentBook } from './findRecentBook';
 
+const date = new Date();
+
 const dummyUser = UserDetails.create({
   id: 'testerId',
   nickname: 'tester',
@@ -16,6 +18,9 @@ const dummyBook = Book.create({
   author: 'author',
   description: 'descr',
   owner: dummyUser,
+  createdAt: date,
+  updatedAt: date,
+  addedAt: date,
 }).getValue();
 
 let useCase: FindRecentBook;

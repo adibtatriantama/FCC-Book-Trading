@@ -16,6 +16,8 @@ let useCase: RemoveBook;
 let mockBookRepo: BookRepo;
 let mockTradeRepo: TradeRepo;
 
+const date = new Date();
+
 const dummyUser = UserDetails.create({
   id: 'testerId',
   nickname: 'tester',
@@ -27,6 +29,9 @@ const dummyBook = Book.create(
     author: 'author',
     description: 'descr',
     owner: dummyUser,
+    createdAt: date,
+    updatedAt: date,
+    addedAt: date,
   },
   'bookId',
 ).getValue();

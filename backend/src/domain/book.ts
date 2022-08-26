@@ -7,6 +7,9 @@ export type BookProps = {
   author: string;
   description: string;
   owner: UserDetails;
+  createdAt: Date;
+  updatedAt: Date;
+  addedAt: Date;
 };
 
 export class Book {
@@ -34,8 +37,21 @@ export class Book {
     return this._props.owner;
   }
 
+  get createdAt(): Date {
+    return this._props.createdAt;
+  }
+
+  get updatedAt(): Date {
+    return this._props.updatedAt;
+  }
+
+  get addedAt(): Date {
+    return this._props.addedAt;
+  }
+
   transferOwnership(newOwner: UserDetails): void {
     this.isOwnerChanged = true;
+    this._props.addedAt = new Date();
     this._props.owner = newOwner;
   }
 }

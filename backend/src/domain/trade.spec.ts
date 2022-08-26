@@ -2,6 +2,8 @@ import { Book } from './book';
 import { Trade } from './trade';
 import { UserDetails } from './userDetails';
 
+const date = new Date();
+
 const dummyOwner = UserDetails.create({
   nickname: 'owner',
   id: 'owner-id',
@@ -27,6 +29,9 @@ const buildBook1 = () =>
       author: 'author1',
       description: 'description1',
       owner: dummyOwner,
+      createdAt: date,
+      updatedAt: date,
+      addedAt: date,
     },
     'book1-id',
   ).getValue();
@@ -38,6 +43,9 @@ const buildBook2 = () =>
       author: 'author2',
       description: 'description2',
       owner: dummyTrader,
+      createdAt: date,
+      updatedAt: date,
+      addedAt: date,
     },
     'book2-id',
   ).getValue();

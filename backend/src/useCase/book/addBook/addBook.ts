@@ -8,7 +8,10 @@ import { UserMapper } from 'src/mapper/userMapper';
 import { BookRepo } from 'src/repo/bookRepo';
 import { UserRepo } from 'src/repo/userRepo';
 
-export type AddBookRequest = Omit<BookProps, 'owner'> & { ownerId: string };
+export type AddBookRequest = Omit<
+  BookProps,
+  'owner' | 'createdAt' | 'updatedAt' | 'addedAt'
+> & { ownerId: string };
 
 export type AddBookResponse = Either<UseCaseError, BookDto>;
 
@@ -27,8 +30,12 @@ export class AddBook implements UseCase<AddBookRequest, AddBookResponse> {
 
     const owner = getUserResult.getValue();
 
+    const date = new Date();
     const book = Book.create({
       owner: UserMapper.toDetails(owner),
+      createdAt: date,
+      updatedAt: date,
+      addedAt: date,
       ...request,
     }).getValue();
 
