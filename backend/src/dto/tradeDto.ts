@@ -4,10 +4,10 @@ import { UserDto } from './userDto';
 
 export type TradeDto = {
   id: string;
-  owner: UserDto;
-  trader: UserDto;
-  ownerBooks: BookDto[];
-  traderBooks: BookDto[];
+  decider: UserDto;
+  requester: UserDto;
+  deciderBooks: BookDto[];
+  requesterBooks: BookDto[];
   status: TradeStatus;
   createdAt: string;
   acceptedAt?: string;

@@ -40,7 +40,7 @@ export class RemoveTrade
 
     const trade = getTradeResult.getValue();
 
-    if (trade.trader.id !== request.userId) {
+    if (trade.requester.id !== request.userId) {
       return left(
         new UnableToRemoveTradeError('You are not the one proposing the trade'),
       );

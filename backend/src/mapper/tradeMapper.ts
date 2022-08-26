@@ -7,10 +7,10 @@ export class TradeMapper {
   static toDto(trade: Trade): TradeDto {
     return {
       id: trade.id,
-      owner: UserDetailsMapper.toDto(trade.owner),
-      trader: UserDetailsMapper.toDto(trade.trader),
-      ownerBooks: trade.ownerBooks.map(BookMapper.toDto),
-      traderBooks: trade.traderBooks.map(BookMapper.toDto),
+      decider: UserDetailsMapper.toDto(trade.decider),
+      requester: UserDetailsMapper.toDto(trade.requester),
+      deciderBooks: trade.deciderBooks.map(BookMapper.toDto),
+      requesterBooks: trade.requesterBooks.map(BookMapper.toDto),
       status: trade.status,
       createdAt: trade.createdAt.toISOString(),
       acceptedAt: trade.acceptedAt ? trade.acceptedAt.toISOString() : undefined,

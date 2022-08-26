@@ -33,10 +33,10 @@ beforeEach(() => {
   dummyBook1 = createMock<Book>({ owner: dummyOwner });
   dummyBook2 = createMock<Book>({ owner: dummyTrader });
   dummyTrade = createMock<Trade>({
-    owner: dummyOwner,
-    trader: dummyTrader,
-    ownerBooks: [dummyBook1],
-    traderBooks: [dummyBook2],
+    decider: dummyOwner,
+    requester: dummyTrader,
+    deciderBooks: [dummyBook1],
+    requesterBooks: [dummyBook2],
     status: 'pending',
   });
 

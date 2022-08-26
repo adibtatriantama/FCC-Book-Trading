@@ -4,10 +4,10 @@ import { Book } from './book';
 import { UserDetails } from './userDetails';
 
 export type TradeProps = {
-  owner: UserDetails;
-  trader: UserDetails;
-  ownerBooks: Book[];
-  traderBooks: Book[];
+  decider: UserDetails;
+  requester: UserDetails;
+  deciderBooks: Book[];
+  requesterBook: Book[];
   status?: TradeStatus;
   createdAt: Date;
   acceptedAt?: Date;
@@ -27,7 +27,7 @@ export class Trade {
   }
 
   static create(props: TradeProps, id?: string): Result<Trade> {
-    if (props.ownerBooks.length === 0 || props.traderBooks.length === 0) {
+    if (props.deciderBooks.length === 0 || props.requesterBook.length === 0) {
       return Result.fail('Trade must have at least one book');
     }
 
@@ -44,20 +44,20 @@ export class Trade {
     );
   }
 
-  get owner(): UserDetails {
-    return this._props.owner;
+  get decider(): UserDetails {
+    return this._props.decider;
   }
 
-  get trader(): UserDetails {
-    return this._props.trader;
+  get requester(): UserDetails {
+    return this._props.requester;
   }
 
-  get ownerBooks(): Book[] {
-    return this._props.ownerBooks;
+  get deciderBooks(): Book[] {
+    return this._props.deciderBooks;
   }
 
-  get traderBooks(): Book[] {
-    return this._props.traderBooks;
+  get requesterBooks(): Book[] {
+    return this._props.requesterBook;
   }
 
   get status(): TradeStatus {
@@ -87,12 +87,12 @@ export class Trade {
   }
 
   private transferBooksOwnership(): void {
-    for (const book of this.ownerBooks) {
-      book.transferOwnership(this.trader);
+    for (const book of this.deciderBooks) {
+      book.transferOwnership(this.requester);
     }
 
-    for (const book of this.traderBooks) {
-      book.transferOwnership(this.owner);
+    for (const book of this.requesterBooks) {
+      book.transferOwnership(this.decider);
     }
 
     this.isBookOwnershipChanged = true;

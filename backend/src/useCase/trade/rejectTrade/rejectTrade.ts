@@ -42,7 +42,7 @@ export class RejectTrade
 
     const trade = getTradeResult.getValue();
 
-    if (trade.owner.id !== request.userId) {
+    if (trade.decider.id !== request.userId) {
       return left(
         new UnableToRejectTradeError('You are not the owner of the books'),
       );

@@ -91,11 +91,11 @@ export class CreateTrade
     }
 
     const trade = Trade.create({
-      owner: UserMapper.toDetails(owner),
-      trader: UserMapper.toDetails(trader),
+      decider: UserMapper.toDetails(owner),
+      requester: UserMapper.toDetails(trader),
       createdAt: new Date(),
-      ownerBooks,
-      traderBooks,
+      deciderBooks: ownerBooks,
+      requesterBook: traderBooks,
     }).getValue();
 
     const saveResult = await this.tradeRepo.save(trade);

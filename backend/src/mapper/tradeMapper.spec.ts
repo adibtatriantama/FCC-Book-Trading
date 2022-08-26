@@ -46,7 +46,7 @@ describe('TradeMapper', () => {
   it('should map correctly', () => {
     const trade = Trade.create(
       {
-        ownerBooks: [
+        deciderBooks: [
           buildBook(
             {
               title: 'book1',
@@ -55,7 +55,7 @@ describe('TradeMapper', () => {
             'book1',
           ),
         ],
-        traderBooks: [
+        requesterBook: [
           buildBook(
             {
               title: 'book2',
@@ -67,8 +67,8 @@ describe('TradeMapper', () => {
         status: 'rejected',
         createdAt: dummyDate,
         acceptedAt: dummyDate,
-        owner,
-        trader,
+        decider: owner,
+        requester: trader,
       },
       'tradeId',
     ).getValue();
@@ -77,7 +77,7 @@ describe('TradeMapper', () => {
 
     expect(result).toStrictEqual({
       id: 'tradeId',
-      owner: {
+      decider: {
         id: 'ownerId',
         nickname: 'owner',
         address: {
@@ -85,7 +85,7 @@ describe('TradeMapper', () => {
           city: 'city',
         },
       },
-      trader: {
+      requester: {
         id: 'traderId',
         nickname: 'trader',
         address: {
@@ -93,7 +93,7 @@ describe('TradeMapper', () => {
           city: 'city',
         },
       },
-      ownerBooks: [
+      deciderBooks: [
         {
           id: 'book1',
           title: 'book1',
@@ -112,7 +112,7 @@ describe('TradeMapper', () => {
           addedAt: dummyIsoDate,
         },
       ],
-      traderBooks: [
+      requesterBooks: [
         {
           id: 'book2',
           title: 'book2',

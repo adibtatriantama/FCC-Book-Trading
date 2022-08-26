@@ -40,10 +40,10 @@ beforeEach(() => {
   dummyBook1 = createMock<Book>({ owner: dummyOwner });
   dummyBook2 = createMock<Book>({ owner: dummyTrader });
   dummyTrade = Trade.create({
-    owner: dummyOwner,
-    trader: dummyTrader,
-    ownerBooks: [dummyBook1],
-    traderBooks: [dummyBook2],
+    decider: dummyOwner,
+    requester: dummyTrader,
+    deciderBooks: [dummyBook1],
+    requesterBook: [dummyBook2],
     status: 'pending',
     createdAt: new Date(),
   }).getValue();
@@ -77,10 +77,10 @@ describe('Remove Trade', () => {
   describe("when requested trade status isn't pending", () => {
     beforeEach(() => {
       dummyTrade = Trade.create({
-        owner: dummyOwner,
-        trader: dummyTrader,
-        ownerBooks: [dummyBook1],
-        traderBooks: [dummyBook2],
+        decider: dummyOwner,
+        requester: dummyTrader,
+        deciderBooks: [dummyBook1],
+        requesterBook: [dummyBook2],
         status: 'rejected',
         createdAt: new Date(),
       }).getValue();
@@ -138,10 +138,10 @@ describe('Remove Trade', () => {
   describe("when user isn't the trade requester", () => {
     beforeEach(() => {
       dummyTrade = Trade.create({
-        owner: dummyOwner,
-        trader: dummyOther,
-        ownerBooks: [dummyBook1],
-        traderBooks: [dummyBook2],
+        decider: dummyOwner,
+        requester: dummyOther,
+        deciderBooks: [dummyBook1],
+        requesterBook: [dummyBook2],
         status: 'pending',
         createdAt: new Date(),
       }).getValue();

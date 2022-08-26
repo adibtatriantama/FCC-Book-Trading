@@ -61,10 +61,10 @@ describe('Trade', () => {
       book2 = buildBook2();
 
       trade = Trade.create({
-        owner: dummyOwner,
-        trader: dummyTrader,
-        ownerBooks: [book1],
-        traderBooks: [book2],
+        decider: dummyOwner,
+        requester: dummyTrader,
+        deciderBooks: [book1],
+        requesterBook: [book2],
         createdAt: new Date(),
       }).getValue();
     });
@@ -94,10 +94,10 @@ describe('Trade', () => {
         book2 = buildBook2();
 
         trade = Trade.create({
-          owner: dummyOwner,
-          trader: dummyTrader,
-          ownerBooks: [book1],
-          traderBooks: [book2],
+          decider: dummyOwner,
+          requester: dummyTrader,
+          deciderBooks: [book1],
+          requesterBook: [book2],
           status: 'accepted',
           createdAt: new Date(),
         }).getValue();
@@ -115,10 +115,10 @@ describe('Trade', () => {
       book2 = buildBook2();
 
       trade = Trade.create({
-        owner: dummyOwner,
-        trader: dummyTrader,
-        ownerBooks: [book1],
-        traderBooks: [book2],
+        decider: dummyOwner,
+        requester: dummyTrader,
+        deciderBooks: [book1],
+        requesterBook: [book2],
         createdAt: new Date(),
       }).getValue();
     });
@@ -141,10 +141,10 @@ describe('Trade', () => {
         book2 = buildBook2();
 
         trade = Trade.create({
-          owner: dummyOwner,
-          trader: dummyTrader,
-          ownerBooks: [book1],
-          traderBooks: [book2],
+          decider: dummyOwner,
+          requester: dummyTrader,
+          deciderBooks: [book1],
+          requesterBook: [book2],
           status: 'rejected',
           createdAt: new Date(),
         }).getValue();
