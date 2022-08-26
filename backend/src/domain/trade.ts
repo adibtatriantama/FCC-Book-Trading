@@ -28,7 +28,7 @@ export class Trade {
   }
 
   static create(props: TradeProps, id?: string): Result<Trade> {
-    if (props.deciderBooks.length === 0 || props.requesterBook.length === 0) {
+    if (props.deciderBooks.length === 0 || props.requesterBooks.length === 0) {
       return Result.fail('Trade must have at least one book');
     }
 

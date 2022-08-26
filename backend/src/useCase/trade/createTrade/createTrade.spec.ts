@@ -46,7 +46,7 @@ beforeEach(() => {
     decider: dummyOwner,
     requester: dummyTrader,
     deciderBooks: [dummyBook1],
-    requesterBook: [dummyBook2],
+    requesterBooks: [dummyBook2],
     status: 'accepted',
     createdAt: new Date(),
     updatedAt: new Date(),
