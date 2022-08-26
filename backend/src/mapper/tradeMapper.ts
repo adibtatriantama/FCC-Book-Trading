@@ -13,6 +13,7 @@ export class TradeMapper {
       requesterBooks: trade.requesterBooks.map(BookMapper.toDto),
       status: trade.status,
       createdAt: trade.createdAt.toISOString(),
+      updatedAt: trade.updatedAt.toISOString(),
       acceptedAt: trade.acceptedAt ? trade.acceptedAt.toISOString() : undefined,
     };
   }

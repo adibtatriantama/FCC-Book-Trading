@@ -10,6 +10,7 @@ export type TradeProps = {
   requesterBook: Book[];
   status?: TradeStatus;
   createdAt: Date;
+  updatedAt: Date;
   acceptedAt?: Date;
 };
 
@@ -68,6 +69,10 @@ export class Trade {
     return this._props.createdAt;
   }
 
+  get updatedAt(): Date {
+    return this._props.updatedAt;
+  }
+
   get acceptedAt(): Date {
     return this._props.acceptedAt;
   }
@@ -79,7 +84,10 @@ export class Trade {
 
     this._props.status = 'accepted';
 
-    this._props.acceptedAt = new Date();
+    const date = new Date();
+
+    this._props.updatedAt = date;
+    this._props.acceptedAt = date;
 
     this.transferBooksOwnership();
 
@@ -103,6 +111,9 @@ export class Trade {
       return Result.fail('Unable to reject trade, trade status is not pending');
     }
 
+    const date = new Date();
+
+    this._props.updatedAt = date;
     this._props.status = 'rejected';
 
     return Result.ok();

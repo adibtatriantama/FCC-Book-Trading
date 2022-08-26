@@ -94,6 +94,7 @@ export class CreateTrade
       decider: UserMapper.toDetails(owner),
       requester: UserMapper.toDetails(trader),
       createdAt: new Date(),
+      updatedAt: new Date(),
       deciderBooks: ownerBooks,
       requesterBook: traderBooks,
     }).getValue();

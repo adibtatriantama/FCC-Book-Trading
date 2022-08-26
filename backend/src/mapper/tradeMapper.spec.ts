@@ -66,7 +66,7 @@ describe('TradeMapper', () => {
         ],
         status: 'rejected',
         createdAt: dummyDate,
-        acceptedAt: dummyDate,
+        updatedAt: dummyDate,
         decider: owner,
         requester: trader,
       },
@@ -75,7 +75,7 @@ describe('TradeMapper', () => {
 
     const result = TradeMapper.toDto(trade);
 
-    expect(result).toStrictEqual({
+    expect(result).toEqual({
       id: 'tradeId',
       decider: {
         id: 'ownerId',
@@ -133,7 +133,7 @@ describe('TradeMapper', () => {
       ],
       status: 'rejected',
       createdAt: dummyIsoDate,
-      acceptedAt: dummyIsoDate,
+      updatedAt: dummyIsoDate,
     });
   });
 });

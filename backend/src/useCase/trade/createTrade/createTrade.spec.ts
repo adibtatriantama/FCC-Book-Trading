@@ -49,6 +49,7 @@ beforeEach(() => {
     requesterBook: [dummyBook2],
     status: 'accepted',
     createdAt: new Date(),
+    updatedAt: new Date(),
   }).getValue();
 
   mockTradeRepo = createMock<TradeRepo>({

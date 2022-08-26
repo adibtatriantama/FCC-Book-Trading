@@ -10,5 +10,6 @@ export type TradeDto = {
   requesterBooks: BookDto[];
   status: TradeStatus;
   createdAt: string;
+  updatedAt: string;
   acceptedAt?: string;
 };

@@ -46,6 +46,7 @@ beforeEach(() => {
     requesterBook: [dummyBook2],
     status: 'pending',
     createdAt: new Date(),
+    updatedAt: new Date(),
   }).getValue();
 
   mockTradeRepo = createMock<TradeRepo>({
@@ -83,6 +84,7 @@ describe('Remove Trade', () => {
         requesterBook: [dummyBook2],
         status: 'rejected',
         createdAt: new Date(),
+        updatedAt: new Date(),
       }).getValue();
 
       mockTradeRepo = createMock<TradeRepo>({
@@ -144,6 +146,7 @@ describe('Remove Trade', () => {
         requesterBook: [dummyBook2],
         status: 'pending',
         createdAt: new Date(),
+        updatedAt: new Date(),
       }).getValue();
 
       mockTradeRepo = createMock<TradeRepo>({
