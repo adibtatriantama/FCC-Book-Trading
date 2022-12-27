@@ -1,46 +1,47 @@
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocument } from '@aws-sdk/lib-dynamodb';
+import { Model } from 'dynamodb-onetable';
 import { NOT_FOUND } from 'src/constant';
 import { Result } from 'src/core/result';
 import { Book } from 'src/domain/book';
+import { BookType, onetable } from 'src/infra/db/onetable';
+import { BookMapper } from 'src/mapper/bookMapper';
 import { BookRepo } from '../bookRepo';
-import { DB_BOOK, DB_BOOK_PREFIX, DB_USER_PREFIX } from './constant';
-import { DbBookMapper } from './mapper/dbBookMapper';
-
-const ddbclient = new DynamoDBClient({
-  region: process.env.APP_REGION,
-});
-const ddbDoc = DynamoDBDocument.from(ddbclient, {
-  marshallOptions: { removeUndefinedValues: true },
-});
 
 export class DynamoDbBookRepo implements BookRepo {
+  private bookModel: Model<BookType>;
+  private isDev: boolean;
+
+  constructor() {
+    this.bookModel = onetable.getModel<BookType>('Book');
+
+    this.isDev = process.env.NODE_ENV !== 'production';
+  }
+
   async findById(
     bookId: string,
     options = { consistentRead: false },
   ): Promise<Result<Book>> {
     try {
-      const getResult = await ddbDoc.get({
-        TableName: process.env.TABLE_NAME,
-        Key: {
-          PK: DB_BOOK,
-          SK: DB_BOOK_PREFIX + bookId,
-        },
-        ConsistentRead: options.consistentRead,
-      });
+      const stats = this.isDev ? {} : undefined;
 
-      const item = getResult.Item;
+      const result = await this.bookModel.get(
+        { id: bookId },
+        { consistent: options.consistentRead, stats },
+      );
 
-      if (!item) {
+      if (stats) {
+        console.log(stats);
+      }
+
+      if (!result) {
         return Result.fail(NOT_FOUND);
       }
 
-      const entity = DbBookMapper.toEntity(item);
+      const book = BookMapper.toBook(result);
 
-      return Result.ok(entity);
+      return Result.ok(book);
     } catch (error) {
       console.error(error);
-      return Result.fail('Unexpected Error');
+      return Result.fail('unexpected error');
     }
   }
 
@@ -48,37 +49,35 @@ export class DynamoDbBookRepo implements BookRepo {
     bookIds: string[],
     options = { consistentRead: false },
   ): Promise<Result<Book[]>> {
-    if (bookIds.length > 100) {
-      return Result.fail('Too many books');
-    }
-
-    const keys = bookIds.map((bookId) => ({
-      PK: DB_BOOK,
-      SK: DB_BOOK_PREFIX + bookId,
-    }));
-
     try {
-      const batchItemGetResult = await ddbDoc.batchGet({
-        RequestItems: {
-          [process.env.TABLE_NAME]: {
-            Keys: keys,
-            ConsistentRead: options.consistentRead,
-          },
-        },
-      });
+      const stats = this.isDev ? {} : undefined;
+      const books: Book[] = [];
 
-      const items = batchItemGetResult.Responses[process.env.TABLE_NAME];
+      // Map Entries: Maximum number of 100 items. https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_BatchGetItem.html
+      for (let i = 0; i < bookIds.length; i += 100) {
+        const bookIdsSlice = bookIds.slice(i, i + 100);
+        const batch = {};
 
-      if (!items) {
-        return Result.fail(NOT_FOUND);
+        for (const userId of bookIdsSlice) {
+          await this.bookModel.get({ id: userId }, { batch });
+        }
+
+        const result = await onetable.batchGet(batch, {
+          consistent: options.consistentRead,
+          stats,
+        });
+
+        if (stats) {
+          console.log(stats);
+        }
+
+        books.push(...(result as BookType[]).map(BookMapper.toBook));
       }
 
-      const entities = items.map(DbBookMapper.toEntity);
-
-      return Result.ok(entities);
+      return Result.ok(books);
     } catch (error) {
       console.error(error);
-      return Result.fail('Unexpected Error');
+      return Result.fail('unexpected error');
     }
   }
 
@@ -86,36 +85,33 @@ export class DynamoDbBookRepo implements BookRepo {
     userId: string,
     options = { consistentRead: false },
   ): Promise<Result<Book[]>> {
-    const entities: Book[] = [];
-
-    let firstLoad = true;
-    let lastEvaluatedKey: Record<string, any> | undefined = undefined;
+    const books: Book[] = [];
+    let next: any;
 
     try {
-      while (firstLoad || lastEvaluatedKey) {
-        const queryResult = await ddbDoc.query({
-          TableName: process.env.TABLE_NAME,
-          KeyConditionExpression:
-            'GSI1PK = :pk AND begins_with(GSI1SK, :bookPrefix)',
-          ExpressionAttributeValues: {
-            ':pk': DB_USER_PREFIX + userId,
-            ':bookPrefix': DB_BOOK_PREFIX,
+      do {
+        const stats = this.isDev ? {} : undefined;
+        const items = await this.bookModel.find(
+          { ownerId: userId },
+          {
+            index: 'GSI1',
+            reverse: true,
+            consistent: options.consistentRead,
+            stats,
+            next,
           },
-          IndexName: 'GSI1',
-          ScanIndexForward: false,
-          ExclusiveStartKey: lastEvaluatedKey,
-          ConsistentRead: options.consistentRead,
-        });
+        );
 
-        const items = queryResult.Items;
+        if (stats) {
+          console.log(stats);
+        }
 
-        entities.push(...items.map(DbBookMapper.toEntity));
+        books.push(...items.map(BookMapper.toBook));
 
-        firstLoad = false;
-        lastEvaluatedKey = queryResult.LastEvaluatedKey;
-      }
+        next = items.next;
+      } while (next);
 
-      return Result.ok(entities);
+      return Result.ok(books);
     } catch (error) {
       console.error(error);
       return Result.fail('Unexpected Error');
@@ -125,34 +121,33 @@ export class DynamoDbBookRepo implements BookRepo {
   async findRecent(
     options = { consistentRead: false },
   ): Promise<Result<Book[]>> {
-    const entities: Book[] = [];
-
-    let firstLoad = true;
-    let lastEvaluatedKey: Record<string, any> | undefined = undefined;
+    const books: Book[] = [];
+    let next: any;
 
     try {
-      while (firstLoad || lastEvaluatedKey) {
-        const queryResult = await ddbDoc.query({
-          TableName: process.env.TABLE_NAME,
-          KeyConditionExpression: 'PK = :pk AND begins_with(SK, :bookPrefix)',
-          ExpressionAttributeValues: {
-            ':pk': DB_BOOK,
-            ':bookPrefix': DB_BOOK_PREFIX,
+      do {
+        const stats = this.isDev ? {} : undefined;
+        const items = await this.bookModel.find(
+          {},
+          {
+            index: 'GSI2',
+            reverse: true,
+            consistent: options.consistentRead,
+            stats,
+            next,
           },
-          ScanIndexForward: false,
-          ExclusiveStartKey: lastEvaluatedKey,
-          ConsistentRead: options.consistentRead,
-        });
+        );
 
-        const items = queryResult.Items;
+        if (stats) {
+          console.log(stats);
+        }
 
-        entities.push(...items.map(DbBookMapper.toEntity));
+        books.push(...items.map(BookMapper.toBook));
 
-        firstLoad = false;
-        lastEvaluatedKey = queryResult.LastEvaluatedKey;
-      }
+        next = items.next;
+      } while (next);
 
-      return Result.ok(entities);
+      return Result.ok(books);
     } catch (error) {
       console.error(error);
       return Result.fail('Unexpected Error');
@@ -161,28 +156,41 @@ export class DynamoDbBookRepo implements BookRepo {
 
   async save(book: Book): Promise<Result<Book>> {
     try {
-      await ddbDoc.put({
-        TableName: process.env.TABLE_NAME,
-        Item: DbBookMapper.toDbModel(book),
+      const stats = this.isDev ? {} : undefined;
+
+      const result = await this.bookModel.create(BookMapper.toBookType(book), {
+        stats,
       });
 
-      return Result.ok(book);
+      if (stats) {
+        console.log(stats);
+      }
+
+      const createdBook = BookMapper.toBook(result);
+
+      return Result.ok(createdBook);
     } catch (error) {
       console.error(error);
-      return Result.fail('Unexpected Error');
+      return Result.fail('unexpected error');
     }
   }
 
   async remove(book: Book): Promise<Result<void>> {
     try {
-      await ddbDoc.delete({
-        TableName: process.env.TABLE_NAME,
-        Key: {
-          PK: DB_BOOK,
-          SK: DB_BOOK_PREFIX + book.id,
-        },
-      });
+      const stats = this.isDev ? {} : undefined;
 
+      await this.bookModel.remove(
+        {
+          id: book.id,
+        },
+        {
+          stats,
+        },
+      );
+
+      if (stats) {
+        console.log(stats);
+      }
       return Result.ok();
     } catch (error) {
       console.error(error);

@@ -1,0 +1,23 @@
+[
+  {
+    "_id": "10af7532-945f-4609-ba9d-fa428f57b814",
+    "colName": "User",
+    "created": "2022-07-20T04:26:01.204Z",
+    "sortNum": 10000,
+    "folders": []
+  },
+  {
+    "_id": "2774e564-d8c1-4a40-8ed2-2b629eb487a6",
+    "colName": "Book",
+    "created": "2022-07-20T04:26:31.287Z",
+    "sortNum": 20000,
+    "folders": []
+  },
+  {
+    "_id": "b5b73d05-34c9-4063-930c-732b20047057",
+    "colName": "Trade",
+    "created": "2022-07-20T04:34:02.349Z",
+    "sortNum": 30000,
+    "folders": []
+  }
+]

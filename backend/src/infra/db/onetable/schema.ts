@@ -1,0 +1,156 @@
+export const ONETABLE_SCHEMA = {
+  format: 'onetable:1.1.0',
+  version: '0.0.1',
+  indexes: {
+    primary: { hash: 'PK', sort: 'SK' },
+    GSI1: { hash: 'GSI1PK', sort: 'GSI1SK', project: 'all' },
+    GSI2: { hash: 'GSI2PK', sort: 'GSI2SK', project: 'all' },
+  },
+  models: {
+    User: {
+      PK: { type: String, value: 'u#${id}' },
+      SK: { type: String, value: 'metadata' },
+      id: { type: String, required: true },
+      nickname: { type: String, required: true },
+      email: { type: String, required: true },
+      address: {
+        type: Object,
+        schema: {
+          city: { type: String },
+          state: { type: String },
+        },
+      },
+      createdAt: { type: Date, required: true },
+      updatedAt: { type: Date, required: true },
+    },
+    Book: {
+      PK: { type: String, value: 'b#${id}' },
+      SK: { type: String, value: 'metadata' },
+      GSI1PK: { type: String, value: 'u#${ownerId}' },
+      GSI1SK: { type: String, value: '${addedAt}' },
+      GSI2PK: { type: String, value: 'b#' },
+      GSI2SK: { type: String, value: '${createdAt}' },
+      id: { type: String, required: true },
+      title: { type: String, required: true },
+      author: { type: String, required: true },
+      description: { type: String, required: true },
+      createdAt: { type: Date, required: true },
+      updatedAt: { type: Date, required: true },
+      addedAt: { type: Date, required: true },
+      ownerId: { type: String, required: true },
+      owner: {
+        type: Object,
+        required: true,
+        schema: {
+          id: { type: String, required: true },
+          nickname: { type: String, required: true },
+          address: {
+            type: Object,
+            schema: {
+              city: { type: String },
+              state: { type: String },
+            },
+          },
+        },
+      },
+    },
+    Trade: {
+      PK: { type: String, value: 't#${id}' },
+      SK: { type: String, value: 'metadata' },
+      GSI1PK: { type: String, value: 't#${status}' },
+      GSI1SK: { type: String, value: '${createdAt}' },
+      id: { type: String, required: true },
+      status: { type: String, required: true },
+      createdAt: { type: Date, required: true },
+      updatedAt: { type: Date, required: true },
+      acceptedAt: { type: Date },
+    },
+    TradeRequesterBook: {
+      PK: { type: String, value: 't#${tradeId}' },
+      SK: { type: String, value: 'trb#${id}' },
+      GSI1PK: { type: String, value: 'b#${bookId}' },
+      GSI1SK: { type: String, value: 't#${tradeId}' },
+      tradeId: { type: String, required: true },
+      ownerId: { type: String, required: true },
+      bookId: { type: String, required: true },
+      book: {
+        type: Object,
+        required: true,
+        schema: {
+          id: { type: String, required: true },
+          title: { type: String, required: true },
+          author: { type: String, required: true },
+          description: { type: String, required: true },
+        },
+      },
+    },
+    TradeDeciderBook: {
+      PK: { type: String, value: 't#${tradeId}' },
+      SK: { type: String, value: 'tdb#${id}' },
+      GSI1PK: { type: String, value: 'b#${bookId}' },
+      GSI1SK: { type: String, value: 't#${tradeId}' },
+      tradeId: { type: String, required: true },
+      ownerId: { type: String, required: true },
+      bookId: { type: String, required: true },
+      book: {
+        type: Object,
+        required: true,
+        schema: {
+          id: { type: String, required: true },
+          title: { type: String, required: true },
+          author: { type: String, required: true },
+          description: { type: String, required: true },
+        },
+      },
+    },
+    TradeRequester: {
+      PK: { type: String, value: 't#${tradeId}' },
+      SK: { type: String, value: 'tr#${userId}' },
+      GSI1PK: { type: String, value: 'tr#${userId}' },
+      GSI1SK: { type: String, value: 't#${tradeId}' },
+      tradeId: { type: String, required: true },
+      userId: { type: String, required: true },
+      user: {
+        type: Object,
+        required: true,
+        schema: {
+          id: { type: String, required: true },
+          nickname: { type: String, required: true },
+          address: {
+            type: Object,
+            schema: {
+              city: { type: String },
+              state: { type: String },
+            },
+          },
+        },
+      },
+    },
+    TradeDecider: {
+      PK: { type: String, value: 't#${tradeId}' },
+      SK: { type: String, value: 'td#${userId}' },
+      GSI1PK: { type: String, value: 'tr#${userId}' },
+      GSI1SK: { type: String, value: 't#${tradeId}' },
+      tradeId: { type: String, required: true },
+      userId: { type: String, required: true },
+      user: {
+        type: Object,
+        required: true,
+        schema: {
+          id: { type: String, required: true },
+          nickname: { type: String, required: true },
+          address: {
+            type: Object,
+            schema: {
+              city: { type: String },
+              state: { type: String },
+            },
+          },
+        },
+      },
+    },
+  } as const,
+  params: {
+    isoDates: true,
+  },
+};

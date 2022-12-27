@@ -1,0 +1,62 @@
+[
+  {
+    "_id": "e9501232-77be-439c-a954-92f547a51407",
+    "name": "Dev User 1",
+    "default": false,
+    "sortNum": 10000,
+    "created": "2022-07-20T04:09:00.382Z",
+    "modified": "2022-07-26T07:07:19.659Z",
+    "data": [
+      {
+        "name": "BASE_URL",
+        "value": "https://19je5m1osj.execute-api.ap-southeast-1.amazonaws.com"
+      },
+      {
+        "name": "TOKEN",
+        "value": "eyJraWQiOiJsendrVU5ISFliNm1xZmRNWGpcLzZ3ZjloZlU1dE9qZldiVGpDdDhsMGpkUT0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI0NDc3ZmU2My1iMDc5LTQyOTUtOTkxMC1mOGJmMjRmMTViMzUiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtc291dGhlYXN0LTEuYW1hem9uYXdzLmNvbVwvYXAtc291dGhlYXN0LTFfeHZCdURtb1RKIiwidmVyc2lvbiI6MiwiY2xpZW50X2lkIjoiNmhmMjFuNzRyc2Z1aDJ0ODM3dmtmODB0b3EiLCJldmVudF9pZCI6ImFhZjEwZGY5LTUyYzktNGY4Mi05NjgwLWEwOTRlNjA3NGQzOCIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJhdXRoX3RpbWUiOjE2NTg4MTg4MTksImV4cCI6MTY1ODgyMjQxOSwiaWF0IjoxNjU4ODE4ODE5LCJqdGkiOiJiNjBlNzFmZi1kMmQ1LTQzZjQtYTkxMC0xOTQ0YjljYWY4NmEiLCJ1c2VybmFtZSI6IjQ0NzdmZTYzLWIwNzktNDI5NS05OTEwLWY4YmYyNGYxNWIzNSJ9.XQ4N8UNpbxKPxuygb2cQXuevgpRFzBkisji8EvHPHCLS5xRf3ESlI2tvCipTDRBD9zAt06C4NQnvW09MIOAyZ4eYiVO3eiqq6R9-AwTHszdXgHDs2V48oBQH3g-NjMKa3f5i_7wEym06t8zSd7JoOvvCXLsr3AMQGwugfnZh5qaQdKDxpWDE_RSgf2NvcmcAkCZaPvp_F3EfqlXm6fuHt89hCeH2P0eA0DQWxrr9QrzxFsJPLmwES_t0LVz55A8NMYWpaoBkB893fvFe-EA6uj8xyLdZPv3LgFNtXpPGwLtyYoDyBlEkAL2BsdijRPe4PLVwVlQ7icYoYqT9cEjUhQ"
+      },
+      {
+        "name": "BOOK_ID",
+        "value": "01G8D7GQ778MQVZWGW2G65Y008"
+      },
+      {
+        "name": "TRADE_ID",
+        "value": "01G8WCF4J4551XXK6SD24188R4"
+      },
+      {
+        "name": "USER_ID",
+        "value": "88c295f9-c980-41b5-a225-20d09100f5a3"
+      }
+    ]
+  },
+  {
+    "_id": "9678076f-7bd4-4dee-ab91-fd95147ffa23",
+    "name": "Dev User 2",
+    "default": true,
+    "sortNum": 20000,
+    "created": "2022-07-20T07:18:36.345Z",
+    "modified": "2022-07-26T08:04:31.568Z",
+    "data": [
+      {
+        "name": "BASE_URL",
+        "value": "https://19je5m1osj.execute-api.ap-southeast-1.amazonaws.com"
+      },
+      {
+        "name": "TOKEN",
+        "value": "eyJraWQiOiJsendrVU5ISFliNm1xZmRNWGpcLzZ3ZjloZlU1dE9qZldiVGpDdDhsMGpkUT0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI4OGMyOTVmOS1jOTgwLTQxYjUtYTIyNS0yMGQwOTEwMGY1YTMiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtc291dGhlYXN0LTEuYW1hem9uYXdzLmNvbVwvYXAtc291dGhlYXN0LTFfeHZCdURtb1RKIiwidmVyc2lvbiI6MiwiY2xpZW50X2lkIjoiNmhmMjFuNzRyc2Z1aDJ0ODM3dmtmODB0b3EiLCJldmVudF9pZCI6ImQ5MmQyMmMwLWYwOTUtNGFkYi1iOGMyLTE5M2RhM2QwNDEyNiIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJhdXRoX3RpbWUiOjE2NTg4MTkyNzgsImV4cCI6MTY1ODgyMjg3OCwiaWF0IjoxNjU4ODE5Mjc4LCJqdGkiOiJhMjRlYjMxNy1kNDQwLTQzZWEtYjIzZi1lYzBkNDU0Yzc0YjIiLCJ1c2VybmFtZSI6Ijg4YzI5NWY5LWM5ODAtNDFiNS1hMjI1LTIwZDA5MTAwZjVhMyJ9.NxMzi5CFHb5ij7GnU-fQqABoE3hyyyDgzQPorb02lcqAequE-XQGrW5_vdSFnhNcDmQEeu-w_jVep4ggLivW-6eNaPIMqkeSOB_oYzIEs4kO8j5ngGtTudQcdtjOWK3pmyUaDpghlU2OCJKzMF7Wfmr6zoHJuqIyj2fcK7DND46s2vosTBkkzPn7-6uOcI6k0-gal4lmHCWMBbNlu7QdwnW4AlVn44MCLFoNIDZ3n8QPiaeZ2-y4Q2svSbt2TJ8OEOrxOQ9FJ2NdxkSXM8h7TGQrDPQhFk-WVN-hXrW_DrfdjeAmkEJxOj3RD1S01ttKOYwMaVl_kXZhFYycnlA2eg"
+      },
+      {
+        "name": "BOOK_ID",
+        "value": "01G8D7GQ778MQVZWGW2G65Y008"
+      },
+      {
+        "name": "TRADE_ID",
+        "value": "01G8WRJ1VZ79Q6GH63JN123762"
+      },
+      {
+        "name": "USER_ID",
+        "value": "88c295f9-c980-41b5-a225-20d09100f5a3"
+      }
+    ]
+  }
+]

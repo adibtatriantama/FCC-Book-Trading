@@ -25,4 +25,30 @@ describe('UserDetailsMapper', () => {
       });
     });
   });
+
+  describe('toUserDetails', () => {
+    it('should map correctly', () => {
+      const userType = {
+        id: 'tester1',
+        nickname: 'tester',
+        address: {
+          state: 'state',
+          city: 'city',
+        },
+      };
+
+      const user = UserDetailsMapper.toUserDetails(userType);
+
+      expect(user).toStrictEqual(
+        UserDetails.create({
+          id: 'tester1',
+          nickname: 'tester',
+          address: {
+            state: 'state',
+            city: 'city',
+          },
+        }).getValue(),
+      );
+    });
+  });
 });

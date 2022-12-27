@@ -1,0 +1,116 @@
+[
+  {
+    "_id": "135f00da-cc87-449a-baba-e5ce7e5a2806",
+    "colId": "history",
+    "containerId": "",
+    "name": "Find All Books",
+    "url": "{{BASE_URL}}/book",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2022-07-19T10:22:14.576Z",
+    "modified": "2022-07-20T04:22:18.435Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "ee932a30-6cc8-46f2-9f2e-913f0f859fb6",
+    "colId": "history",
+    "containerId": "",
+    "name": "Create Book",
+    "url": "{{BASE_URL}}/book",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2022-07-19T10:22:14.576Z",
+    "modified": "2022-07-20T04:16:01.811Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{TOKEN}}"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n    \"title\": \"Book Title\",\n    \"author\": \"author\",\n    \"description\": \"Description\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "30ffeab3-9c90-4097-a531-c1c09b768b72",
+    "colId": "history",
+    "containerId": "",
+    "name": "Find Book by Id",
+    "url": "{{BASE_URL}}/book/{{BOOK_ID}}",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2022-07-19T10:22:14.576Z",
+    "modified": "2022-07-20T04:22:57.241Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "29dbb3fe-6c4f-4e6f-96ba-04f74311a68f",
+    "colId": "history",
+    "containerId": "",
+    "name": "Find User Me",
+    "url": "{{BASE_URL}}/me",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2022-07-20T04:11:37.240Z",
+    "modified": "2022-07-20T04:13:19.895Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{TOKEN}}"
+      }
+    ],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "7ff64394-9434-473e-b133-bf04791cd6b2",
+    "colId": "history",
+    "containerId": "",
+    "name": "Update User Me",
+    "url": "{{BASE_URL}}/me",
+    "method": "PATCH",
+    "sortNum": 0,
+    "created": "2022-07-20T04:11:37.240Z",
+    "modified": "2022-07-20T04:14:23.653Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{TOKEN}}"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n    \"nickname\": \"new nickname\",\n    \"address\": {\n        \"state\":\"new State\",\n        \"city\": \"new city\"\n    }\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "b05865ed-d4cd-429a-91d9-0465864bddfe",
+    "colId": "history",
+    "containerId": "",
+    "name": "Find All Owned Books",
+    "url": "{{BASE_URL}}/me/book",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2022-07-20T04:11:37.240Z",
+    "modified": "2022-07-20T04:21:59.328Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{TOKEN}}"
+      }
+    ],
+    "params": [],
+    "tests": []
+  }
+]

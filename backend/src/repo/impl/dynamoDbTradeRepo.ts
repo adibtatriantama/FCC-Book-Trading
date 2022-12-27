@@ -1,72 +1,93 @@
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocument } from '@aws-sdk/lib-dynamodb';
+import { Model } from 'dynamodb-onetable';
 import { NOT_FOUND } from 'src/constant';
 import { Result } from 'src/core/result';
 import { Trade } from 'src/domain/trade';
-import { TradeRepo } from '../tradeRepo';
 import {
-  DB_TRADE,
-  DB_TRADE_BOOK_OWNER_PREFIX,
-  DB_TRADE_BOOK_TRADER_PREFIX,
-  DB_TRADE_ITEM_PREFIX,
-  DB_TRADE_PREFIX,
-} from './constant';
-import { DbBookMapper } from './mapper/dbBookMapper';
-import { DbTradeMapper } from './mapper/dbTradeMapper';
-
-const ddbclient = new DynamoDBClient({
-  region: process.env.APP_REGION,
-});
-const ddbDoc = DynamoDBDocument.from(ddbclient, {
-  marshallOptions: { removeUndefinedValues: true },
-});
+  BookType,
+  onetable,
+  TradeDeciderBookType,
+  TradeDeciderType,
+  TradeRequesterBookType,
+  TradeRequesterType,
+  TradeType,
+} from 'src/infra/db/onetable';
+import { TradeMapper } from 'src/mapper/tradeMapper';
+import { TradeRepo } from '../tradeRepo';
 
 export class DynamoDbTradeRepo implements TradeRepo {
+  private tradeModel: Model<TradeType>;
+  private tradeRequesterModel: Model<TradeRequesterType>;
+  private tradeDeciderModel: Model<TradeDeciderType>;
+  private tradeRequesterBookModel: Model<TradeRequesterBookType>;
+  private tradeDeciderBookModel: Model<TradeDeciderBookType>;
+  private bookModel: Model<BookType>;
+  private isDev: boolean;
+
+  constructor() {
+    this.tradeModel = onetable.getModel<TradeType>('Trade');
+    this.tradeRequesterModel =
+      onetable.getModel<TradeRequesterType>('TradeRequester');
+    this.tradeDeciderModel =
+      onetable.getModel<TradeDeciderType>('TradeDecider');
+    this.tradeRequesterBookModel =
+      onetable.getModel<TradeRequesterBookType>('TradeRequesterBook');
+    this.tradeDeciderBookModel =
+      onetable.getModel<TradeDeciderBookType>('TradeDeciderBook');
+    this.bookModel = onetable.getModel<BookType>('Book');
+
+    this.isDev = process.env.NODE_ENV !== 'production';
+  }
+
   async findById(
     tradeId: string,
     options = { consistentRead: false },
   ): Promise<Result<Trade>> {
-    const items: Record<string, any>[] = [];
-
-    let firstLoad = true;
-    let lastEvaluatedKey: Record<string, any> | undefined = undefined;
-
     try {
-      while (firstLoad || lastEvaluatedKey) {
-        const queryResult = await ddbDoc.query({
-          TableName: process.env.TABLE_NAME,
-          KeyConditionExpression: 'PK = :pk',
-          ExpressionAttributeValues: {
-            ':pk': DB_TRADE_PREFIX + tradeId,
-          },
-          ExclusiveStartKey: lastEvaluatedKey,
-          ConsistentRead: options.consistentRead,
-        });
+      const stats = this.isDev ? {} : undefined;
 
-        items.push(...queryResult.Items);
+      const result = await onetable.fetch(
+        [
+          'Trade',
+          'TradeRequester',
+          'TradeDecider',
+          'TradeRequesterBook',
+          'TradeDeciderBook',
+        ],
+        { PK: `t#${tradeId}` },
+        { consistent: options.consistentRead, stats },
+      );
 
-        firstLoad = false;
-        lastEvaluatedKey = queryResult.LastEvaluatedKey;
+      if (stats) {
+        console.log(stats);
       }
-      console.log(items);
 
-      if (!items || items.length === 0) {
+      if (
+        !(
+          result.Trade?.length > 0 ||
+          result.TradeRequester?.length > 0 ||
+          result.TradeDecider?.length > 0
+        )
+      ) {
         return Result.fail(NOT_FOUND);
       }
 
-      const metadata = items.find((item) => /metadata/.test(item.SK));
-      const bookOwner = items.find((item) => /ow#.*/.test(item.SK));
-      const bookTrader = items.find((item) => /tr#.*/.test(item.SK));
-      const tradeItems = items.filter((item) => /ti#.*/.test(item.SK));
+      const metadata = result.Trade[0] as TradeType;
+      const requester = result.TradeRequester[0] as TradeRequesterType;
+      const decider = result.TradeDecider[0] as TradeDeciderType;
+      const requesterBooks = (result.TradeRequesterBook ??
+        []) as TradeRequesterBookType[];
+      const deciderBooks = (result.TradeDeciderBook ??
+        []) as TradeDeciderBookType[];
 
-      const entity = DbTradeMapper.toEntity({
+      const trade = TradeMapper.toTrade({
         metadata,
-        bookOwner,
-        bookTrader,
-        tradeItems,
+        requester,
+        decider,
+        requesterBooks,
+        deciderBooks,
       });
 
-      return Result.ok(entity);
+      return Result.ok(trade);
     } catch (error) {
       console.error(error);
       return Result.fail('Unexpected Error');
@@ -77,44 +98,36 @@ export class DynamoDbTradeRepo implements TradeRepo {
     ownerId: string,
     options = { consistentRead: false },
   ): Promise<Result<Trade[]>> {
-    const items: Record<string, any>[] = [];
-
-    let firstLoad = true;
-    let lastEvaluatedKey: Record<string, any> | undefined = undefined;
-
     try {
-      while (firstLoad || lastEvaluatedKey) {
-        const queryResult = await ddbDoc.query({
-          TableName: process.env.TABLE_NAME,
-          KeyConditionExpression:
-            'GSI1PK = :pk AND begins_with(GSI1SK, :tradePrefix)',
-          ExpressionAttributeValues: {
-            ':pk': DB_TRADE_BOOK_OWNER_PREFIX + ownerId,
-            ':tradePrefix': DB_TRADE_PREFIX,
+      const stats = this.isDev ? {} : undefined;
+
+      const tradeIds = (
+        await this.tradeDeciderModel.find(
+          {
+            userId: ownerId,
           },
-          IndexName: 'GSI1',
-          ExclusiveStartKey: lastEvaluatedKey,
-          ScanIndexForward: false,
-          ConsistentRead: options.consistentRead,
-        });
+          {
+            index: 'GSI1',
+            consistent: options.consistentRead,
+            reverse: true,
+            stats,
+          },
+        )
+      ).map((item) => item.tradeId);
 
-        items.push(...queryResult.Items);
-
-        firstLoad = false;
-        lastEvaluatedKey = queryResult.LastEvaluatedKey;
+      if (stats) {
+        console.log(stats);
       }
 
-      const findByIdPromises = items.map((item) => {
-        return this.findById(item.tradeId, {
-          consistentRead: options.consistentRead,
-        });
-      });
+      const findTradeResults = await Promise.all(
+        tradeIds.map((id) => this.findById(id)),
+      );
 
-      const findByIdResults = await Promise.all(findByIdPromises);
+      const trades = findTradeResults
+        .filter((result) => result.isSuccess)
+        .map((result) => result.getValue());
 
-      const entities = findByIdResults.map((result) => result.getValue());
-
-      return Result.ok(entities);
+      return Result.ok(trades);
     } catch (error) {
       console.error(error);
       return Result.fail('Unexpected Error');
@@ -125,45 +138,36 @@ export class DynamoDbTradeRepo implements TradeRepo {
     traderId: string,
     options = { consistentRead: false },
   ): Promise<Result<Trade[]>> {
-    const items: Record<string, any>[] = [];
-
-    let firstLoad = true;
-    let lastEvaluatedKey: Record<string, any> | undefined = undefined;
-
     try {
-      while (firstLoad || lastEvaluatedKey) {
-        const queryResult = await ddbDoc.query({
-          TableName: process.env.TABLE_NAME,
-          KeyConditionExpression:
-            'GSI1PK = :pk AND begins_with(GSI1SK, :tradePrefix)',
-          ExpressionAttributeValues: {
-            ':pk': DB_TRADE_BOOK_TRADER_PREFIX + traderId,
-            ':tradePrefix': DB_TRADE_PREFIX,
+      const stats = this.isDev ? {} : undefined;
+
+      const tradeIds = (
+        await this.tradeRequesterModel.find(
+          {
+            userId: traderId,
           },
-          IndexName: 'GSI1',
-          ExclusiveStartKey: lastEvaluatedKey,
-          ScanIndexForward: false,
-          ConsistentRead: options.consistentRead,
-        });
+          {
+            index: 'GSI1',
+            reverse: true,
+            consistent: options.consistentRead,
+            stats,
+          },
+        )
+      ).map((item) => item.tradeId);
 
-        items.push(...queryResult.Items);
-
-        firstLoad = false;
-        lastEvaluatedKey = queryResult.LastEvaluatedKey;
+      if (stats) {
+        console.log(stats);
       }
 
-      const findByIdPromises = items.map((item) => {
-        return this.findById(item.tradeId, {
-          consistentRead: options.consistentRead,
-        });
-      });
+      const findTradeResults = await Promise.all(
+        tradeIds.map((id) => this.findById(id)),
+      );
 
-      const findByIdResults = await Promise.all(findByIdPromises);
+      const trades = findTradeResults
+        .filter((result) => result.isSuccess)
+        .map((result) => result.getValue());
 
-      console.log(findByIdResults);
-      const entities = findByIdResults.map((result) => result.getValue());
-
-      return Result.ok(entities);
+      return Result.ok(trades);
     } catch (error) {
       console.error(error);
       return Result.fail('Unexpected Error');
@@ -174,44 +178,57 @@ export class DynamoDbTradeRepo implements TradeRepo {
     bookId: string,
     options = { consistentRead: false },
   ): Promise<Result<Trade[]>> {
-    const items: Record<string, any>[] = [];
-
-    let firstLoad = true;
-    let lastEvaluatedKey: Record<string, any> | undefined = undefined;
-
     try {
-      while (firstLoad || lastEvaluatedKey) {
-        const queryResult = await ddbDoc.query({
-          TableName: process.env.TABLE_NAME,
-          KeyConditionExpression:
-            'GSI1PK = :pk AND begins_with(GSI1SK, :tradePrefix)',
-          ExpressionAttributeValues: {
-            ':pk': DB_TRADE_ITEM_PREFIX + bookId,
-            ':tradePrefix': DB_TRADE_PREFIX,
+      let next;
+      const tradeIds: string[] = [];
+
+      do {
+        const stats = this.isDev ? {} : undefined;
+        const items = await onetable.fetch(
+          ['TradeRequesterBook', 'TradeDeciderBook'],
+          { GSI1PK: `b#${bookId}` },
+          {
+            index: 'GSI1',
+            consistent: options.consistentRead,
+            reverse: true,
+            next,
+            stats,
           },
-          IndexName: 'GSI1',
-          ExclusiveStartKey: lastEvaluatedKey,
-          ScanIndexForward: false,
-          ConsistentRead: options.consistentRead,
-        });
+        );
 
-        items.push(...queryResult.Items);
+        if (stats) {
+          console.log(stats);
+        }
 
-        firstLoad = false;
-        lastEvaluatedKey = queryResult.LastEvaluatedKey;
-      }
+        tradeIds.push(
+          ...[...items.TradeRequesterBook, ...items.TradeDeciderBook].map(
+            (item) => item.tradeId,
+          ),
+        );
 
-      const findByIdPromises = items.map((item) => {
-        return this.findById(item.tradeId, {
-          consistentRead: options.consistentRead,
-        });
-      });
+        next = items.next;
+      } while (next);
 
-      const findByIdResults = await Promise.all(findByIdPromises);
+      const findTradeResults = await Promise.all(
+        tradeIds
+          // Sort alphabetically descending
+          .sort((a, b) => {
+            if (a < b) {
+              return 1;
+            }
+            if (a > b) {
+              return -1;
+            }
+            return 0;
+          })
+          .map((id) => this.findById(id)),
+      );
 
-      const entities = findByIdResults.map((result) => result.getValue());
+      const trades = findTradeResults
+        .filter((result) => result.isSuccess)
+        .map((result) => result.getValue());
 
-      return Result.ok(entities);
+      return Result.ok(trades);
     } catch (error) {
       console.error(error);
       return Result.fail('Unexpected Error');
@@ -222,71 +239,51 @@ export class DynamoDbTradeRepo implements TradeRepo {
     bookId: string,
     options = { consistentRead: false },
   ): Promise<Result<number>> {
-    try {
-      const findResult = await this.findTradeByBookId(bookId, {
-        consistentRead: options.consistentRead,
-      });
+    const tradesResult = await this.findTradeByBookId(bookId, options);
 
-      if (findResult.isSuccess) {
-        const entities = findResult.getValue();
-
-        const count = entities.filter(
-          (entity) => entity.status === 'pending',
-        ).length;
-
-        return Result.ok(count);
-      } else {
-        throw new Error(findResult.getErrorValue());
-      }
-    } catch (error) {
-      console.error(error);
-      return Result.fail('Unexpected Error');
+    if (tradesResult.isFailure) {
+      console.error(tradesResult.getErrorValue());
+      return Result.fail(tradesResult.getErrorValue());
     }
+
+    const pendingTradeCount = tradesResult
+      .getValue()
+      .filter((trade) => trade.status === 'pending').length;
+
+    return Result.ok(pendingTradeCount);
   }
 
   async findAcceptedTrade(
     options = { consistentRead: false },
   ): Promise<Result<Trade[]>> {
-    const items: Record<string, any>[] = [];
-
-    let firstLoad = true;
-    let lastEvaluatedKey: Record<string, any> | undefined = undefined;
-
     try {
-      while (firstLoad || lastEvaluatedKey) {
-        const queryResult = await ddbDoc.query({
-          TableName: process.env.TABLE_NAME,
-          KeyConditionExpression:
-            'GSI1PK = :pk AND begins_with(GSI1SK, :acceptedTradePrefix)',
-          ExpressionAttributeValues: {
-            ':pk': DB_TRADE,
-            ':acceptedTradePrefix': DB_TRADE_PREFIX + 'accepted#',
+      const stats = this.isDev ? {} : undefined;
+
+      const tradeIds = (
+        await this.tradeModel.find(
+          { status: 'accepted' },
+          {
+            index: 'GSI1',
+            consistent: options.consistentRead,
+            reverse: true,
+            stats,
           },
-          IndexName: 'GSI1',
-          ExclusiveStartKey: lastEvaluatedKey,
-          ScanIndexForward: false,
-          ConsistentRead: options.consistentRead,
-        });
+        )
+      ).map((item) => item.id);
 
-        items.push(...queryResult.Items);
-
-        firstLoad = false;
-        lastEvaluatedKey = queryResult.LastEvaluatedKey;
+      if (stats) {
+        console.log(stats);
       }
 
-      console.log(items);
+      const findTradeResults = await Promise.all(
+        tradeIds.map((id) => this.findById(id)),
+      );
 
-      const findByIdPromises = items.map((item) => {
-        return this.findById(item.id, {
-          consistentRead: options.consistentRead,
-        });
-      });
+      const trades = findTradeResults
+        .filter((result) => result.isSuccess)
+        .map((result) => result.getValue());
 
-      const findByIdResults = await Promise.all(findByIdPromises);
-
-      const entities = findByIdResults.map((result) => result.getValue());
-
-      return Result.ok(entities);
+      return Result.ok(trades);
     } catch (error) {
       console.error(error);
       return Result.fail('Unexpected Error');
@@ -294,122 +291,134 @@ export class DynamoDbTradeRepo implements TradeRepo {
   }
 
   async save(trade: Trade): Promise<Result<Trade>> {
-    const dbModel = DbTradeMapper.toDbModel(trade);
-
-    // always update metadata
-    const putRequests: { PutRequest: { Item: Record<string, any> } }[] = [
-      {
-        PutRequest: { Item: dbModel.metadata },
-      },
-    ];
-
-    // write whole partition if new
-    if (trade.isNew) {
-      putRequests.push(
-        {
-          PutRequest: {
-            Item: dbModel.bookOwner,
-          },
-        },
-        {
-          PutRequest: {
-            Item: dbModel.bookTrader,
-          },
-        },
-        ...dbModel.tradeItems.map((item) => {
-          return {
-            PutRequest: {
-              Item: item,
-            },
-          };
-        }),
-      );
-    }
-
-    // if book ownership changed, update the book, book inside trade isn't changed for history
-    if (trade.isBookOwnershipChanged) {
-      const bookModels = [...trade.ownerBooks, ...trade.traderBooks].map(
-        DbBookMapper.toDbModel,
-      );
-
-      putRequests.push(
-        ...bookModels.map((item) => {
-          return {
-            PutRequest: {
-              Item: item,
-            },
-          };
-        }),
-      );
-
-      // reject all trades that are not accepted
-    }
-
-    const batchWritePromises = [];
-
-    // max write 25 item in batchrequest
-    for (let i = 0; i < putRequests.length; i += 25) {
-      batchWritePromises.push(
-        ddbDoc.batchWrite({
-          RequestItems: {
-            [process.env.TABLE_NAME]: [...putRequests.slice(i, i + 25)],
-          },
-        }),
-      );
-    }
-
     try {
-      await Promise.all(batchWritePromises);
+      if (trade.isNew) {
+        const stats1 = this.isDev ? {} : undefined;
+        const tradeTypes = TradeMapper.toTradeTypes(trade);
+        const batch = {};
+
+        await this.tradeModel.create(tradeTypes.metadata, { batch });
+        await this.tradeDeciderModel.create(tradeTypes.decider, { batch });
+        await this.tradeRequesterModel.create(tradeTypes.requester, { batch });
+
+        await onetable.batchWrite(batch, {
+          stats: stats1,
+        });
+
+        if (stats1) {
+          console.log(stats1);
+        }
+
+        for (let i = 0; i < tradeTypes.requesterBooks.length; i += 25) {
+          const bookSlice = tradeTypes.requesterBooks.slice(i, i + 25);
+          const stats2 = this.isDev ? {} : undefined;
+          const batch2 = {};
+
+          for (let j = 0; j < bookSlice.length; j++) {
+            await this.tradeRequesterBookModel.create(bookSlice[j], {
+              batch: batch2,
+            });
+          }
+
+          await onetable.batchWrite(batch2, {
+            stats: stats2,
+          });
+
+          if (stats2) {
+            console.log(stats2);
+          }
+        }
+
+        for (let i = 0; i < tradeTypes.deciderBooks.length; i += 25) {
+          const bookSlice = tradeTypes.deciderBooks.slice(i, i + 25);
+          const stats2 = this.isDev ? {} : undefined;
+          const batch2 = {};
+
+          for (let j = 0; j < bookSlice.length; j++) {
+            await this.tradeDeciderBookModel.create(bookSlice[j], {
+              batch: batch2,
+            });
+          }
+
+          await onetable.batchWrite(batch2, {
+            stats: stats2,
+          });
+
+          if (stats2) {
+            console.log(stats2);
+          }
+        }
+      }
 
       return Result.ok(trade);
     } catch (error) {
       console.error(error);
-      return Result.fail('Unexpected Error');
+      return Result.fail('unexpected error');
     }
   }
 
   async remove(trade: Trade): Promise<Result<void>> {
-    const dbModel = DbTradeMapper.toDbModel(trade);
+    try {
+      const stats1 = this.isDev ? {} : undefined;
+      const tradeTypes = TradeMapper.toTradeTypes(trade);
+      const batch = {};
 
-    const allItems: { PK: string; SK: string }[] = [
-      dbModel.metadata,
-      dbModel.bookOwner,
-      dbModel.bookTrader,
-      ...dbModel.tradeItems,
-    ];
+      await this.tradeModel.remove(tradeTypes.metadata, { batch });
+      await this.tradeDeciderModel.remove(tradeTypes.decider, { batch });
+      await this.tradeRequesterModel.remove(tradeTypes.requester, { batch });
 
-    const deleteRequest: { DeleteRequest: { Key: Record<string, any> } }[] =
-      allItems.map((item) => {
-        return {
-          DeleteRequest: {
-            Key: {
-              PK: item.PK,
-              SK: item.SK,
-            },
-          },
-        };
+      await onetable.batchWrite(batch, {
+        stats: stats1,
       });
 
-    const batchWritePromises = [];
+      if (stats1) {
+        console.log(stats1);
+      }
 
-    // max write 25 item in batchrequest
-    for (let i = 0; i < deleteRequest.length; i += 25) {
-      batchWritePromises.push(
-        ddbDoc.batchWrite({
-          RequestItems: {
-            [process.env.TABLE_NAME]: [...deleteRequest.slice(i, i + 25)],
-          },
-        }),
-      );
-    }
+      for (let i = 0; i < tradeTypes.requesterBooks.length; i += 25) {
+        const bookSlice = tradeTypes.requesterBooks.slice(i, i + 25);
+        const stats2 = this.isDev ? {} : undefined;
+        const batch2 = {};
 
-    try {
-      await Promise.all(batchWritePromises);
+        for (let j = 0; j < bookSlice.length; j++) {
+          await this.tradeRequesterBookModel.remove(bookSlice[j], {
+            batch: batch2,
+          });
+        }
+
+        await onetable.batchWrite(batch2, {
+          stats: stats2,
+        });
+
+        if (stats2) {
+          console.log(stats2);
+        }
+      }
+
+      for (let i = 0; i < tradeTypes.deciderBooks.length; i += 25) {
+        const bookSlice = tradeTypes.deciderBooks.slice(i, i + 25);
+        const stats2 = this.isDev ? {} : undefined;
+        const batch2 = {};
+
+        for (let j = 0; j < bookSlice.length; j++) {
+          await this.tradeDeciderBookModel.remove(bookSlice[j], {
+            batch: batch2,
+          });
+        }
+
+        await onetable.batchWrite(batch2, {
+          stats: stats2,
+        });
+
+        if (stats2) {
+          console.log(stats2);
+        }
+      }
 
       return Result.ok();
     } catch (error) {
       console.error(error);
-      return Result.fail('Unexpected Error');
+      return Result.fail('unexpected error');
     }
   }
 }

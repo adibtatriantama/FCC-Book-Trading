@@ -1,0 +1,354 @@
+[
+  {
+    "_id": "63c585a9-1072-45de-a95c-215ac3f5c6cf",
+    "colId": "10af7532-945f-4609-ba9d-fa428f57b814",
+    "containerId": "",
+    "name": "Find User Me",
+    "url": "{{BASE_URL}}/me",
+    "method": "GET",
+    "sortNum": 10000,
+    "created": "2022-07-20T04:26:17.140Z",
+    "modified": "2022-07-20T04:26:17.140Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{TOKEN}}"
+      }
+    ],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "d6a8726a-964f-450c-ab4d-16063eb3c830",
+    "colId": "10af7532-945f-4609-ba9d-fa428f57b814",
+    "containerId": "",
+    "name": "Update User Me",
+    "url": "{{BASE_URL}}/me",
+    "method": "PATCH",
+    "sortNum": 20000,
+    "created": "2022-07-20T04:26:24.436Z",
+    "modified": "2022-07-20T04:26:24.436Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{TOKEN}}"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n    \"nickname\": \"new nickname\",\n    \"address\": {\n        \"state\":\"new State\",\n        \"city\": \"new city\"\n    }\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "0e44370c-39f5-40b7-af76-f2665f99853c",
+    "colId": "2774e564-d8c1-4a40-8ed2-2b629eb487a6",
+    "containerId": "",
+    "name": "Create Book",
+    "url": "{{BASE_URL}}/book",
+    "method": "POST",
+    "sortNum": 10000,
+    "created": "2022-07-20T04:26:39.847Z",
+    "modified": "2022-07-20T07:39:46.028Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{TOKEN}}"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n    \"title\": \"Book Newer\",\n    \"author\": \"author\",\n    \"description\": \"Description\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "5e16ee2c-f7c3-4641-84a0-42016203da9c",
+    "colId": "2774e564-d8c1-4a40-8ed2-2b629eb487a6",
+    "containerId": "",
+    "name": "Find All Owned Books",
+    "url": "{{BASE_URL}}/me/book",
+    "method": "GET",
+    "sortNum": 20000,
+    "created": "2022-07-20T04:26:46.237Z",
+    "modified": "2022-07-20T04:26:46.237Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{TOKEN}}"
+      }
+    ],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "ae93112f-ee70-4e05-af79-272353448b6d",
+    "colId": "2774e564-d8c1-4a40-8ed2-2b629eb487a6",
+    "containerId": "",
+    "name": "Find All Books",
+    "url": "{{BASE_URL}}/book",
+    "method": "GET",
+    "sortNum": 30000,
+    "created": "2022-07-20T04:26:52.155Z",
+    "modified": "2022-07-20T04:26:52.155Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "5e3de59a-dbe1-43ce-a60e-3a871b50a335",
+    "colId": "2774e564-d8c1-4a40-8ed2-2b629eb487a6",
+    "containerId": "",
+    "name": "Find Book by Id",
+    "url": "{{BASE_URL}}/book/{{BOOK_ID}}",
+    "method": "GET",
+    "sortNum": 40000,
+    "created": "2022-07-20T04:26:58.096Z",
+    "modified": "2022-07-20T04:26:58.096Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "eca100ab-7f86-4514-aa7a-ae00eb6f07ad",
+    "colId": "b5b73d05-34c9-4063-930c-732b20047057",
+    "containerId": "",
+    "name": "Create Trade",
+    "url": "{{BASE_URL}}/trade",
+    "method": "POST",
+    "sortNum": 10000,
+    "created": "2022-07-20T04:34:12.219Z",
+    "modified": "2022-07-20T07:40:26.461Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{TOKEN}}"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n    \"ownerId\": \"88c295f9-c980-41b5-a225-20d09100f5a3\",\n    \"ownerBookIds\": [\"01G8D7HDN0JWPYZRTQXG26JNWR\"],\n    \"traderBookIds\": [\"01G8D8RTG18GT9B4JNA6J5Y1E3\"]\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "45f196c8-2056-4810-83af-e1cba9d85fd3",
+    "colId": "b5b73d05-34c9-4063-930c-732b20047057",
+    "containerId": "",
+    "name": "Find Trade By Id",
+    "url": "{{BASE_URL}}/trade/{{TRADE_ID}}",
+    "method": "GET",
+    "sortNum": 20000,
+    "created": "2022-07-20T04:37:01.134Z",
+    "modified": "2022-07-20T04:37:44.283Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{TOKEN}}"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n    \"ownerId\": \"4477fe63-b079-4295-9910-f8bf24f15b35\",\n    \"ownerBookIds\": [\"01G8CX3RSAZ04NKWM82VHBVTSW\"],\n    \"traderBookIds\": [\"01G8CY00SPVPADV6377N3Z5M5N\"]\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "5b8a5338-1038-4a44-9ed2-9bfbf2c42a7f",
+    "colId": "b5b73d05-34c9-4063-930c-732b20047057",
+    "containerId": "",
+    "name": "Accept Trade",
+    "url": "{{BASE_URL}}/trade/{{TRADE_ID}}/accept",
+    "method": "POST",
+    "sortNum": 30000,
+    "created": "2022-07-20T04:39:18.939Z",
+    "modified": "2022-07-20T07:21:36.828Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{TOKEN}}"
+      }
+    ],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "cfd7538a-0ea8-4dec-bbff-e7fc6c75a43a",
+    "colId": "b5b73d05-34c9-4063-930c-732b20047057",
+    "containerId": "",
+    "name": "Reject Trade",
+    "url": "{{BASE_URL}}/trade/{{TRADE_ID}}/reject",
+    "method": "POST",
+    "sortNum": 40000,
+    "created": "2022-07-20T04:39:54.476Z",
+    "modified": "2022-07-20T04:40:35.995Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{TOKEN}}"
+      }
+    ],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "12be589f-8744-4284-a263-c540f98a77b4",
+    "colId": "2774e564-d8c1-4a40-8ed2-2b629eb487a6",
+    "containerId": "",
+    "name": "Remove Book",
+    "url": "{{BASE_URL}}/book/{{BOOK_ID}}",
+    "method": "DELETE",
+    "sortNum": 50000,
+    "created": "2022-07-20T04:41:15.039Z",
+    "modified": "2022-07-20T04:41:47.347Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{TOKEN}}"
+      }
+    ],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "f20dc607-a33c-4700-9454-32596792bf9b",
+    "colId": "b5b73d05-34c9-4063-930c-732b20047057",
+    "containerId": "",
+    "name": "Find Trade By Book",
+    "url": "{{BASE_URL}}/book/{{BOOK_ID}}/trade",
+    "method": "GET",
+    "sortNum": 25000,
+    "created": "2022-07-20T04:43:14.186Z",
+    "modified": "2022-07-20T04:44:17.777Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{TOKEN}}"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n    \"ownerId\": \"4477fe63-b079-4295-9910-f8bf24f15b35\",\n    \"ownerBookIds\": [\"01G8CX3RSAZ04NKWM82VHBVTSW\"],\n    \"traderBookIds\": [\"01G8CY00SPVPADV6377N3Z5M5N\"]\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "db938450-07da-47e1-9abc-496f02e2131b",
+    "colId": "b5b73d05-34c9-4063-930c-732b20047057",
+    "containerId": "",
+    "name": "Find Trade By Book Owner",
+    "url": "{{BASE_URL}}/user/{{USER_ID}}/tradeAsOwner",
+    "method": "GET",
+    "sortNum": 27500,
+    "created": "2022-07-20T04:46:16.869Z",
+    "modified": "2022-07-20T04:46:52.314Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{TOKEN}}"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n    \"ownerId\": \"4477fe63-b079-4295-9910-f8bf24f15b35\",\n    \"ownerBookIds\": [\"01G8CX3RSAZ04NKWM82VHBVTSW\"],\n    \"traderBookIds\": [\"01G8CY00SPVPADV6377N3Z5M5N\"]\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "87d36e9e-2b87-4a7f-a4be-7ad6558351e9",
+    "colId": "b5b73d05-34c9-4063-930c-732b20047057",
+    "containerId": "",
+    "name": "Find Trade By Book Trader",
+    "url": "{{BASE_URL}}/user/{{USER_ID}}/tradeAsTrader",
+    "method": "GET",
+    "sortNum": 28750,
+    "created": "2022-07-20T04:47:31.196Z",
+    "modified": "2022-07-20T04:47:47.403Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{TOKEN}}"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n    \"ownerId\": \"4477fe63-b079-4295-9910-f8bf24f15b35\",\n    \"ownerBookIds\": [\"01G8CX3RSAZ04NKWM82VHBVTSW\"],\n    \"traderBookIds\": [\"01G8CY00SPVPADV6377N3Z5M5N\"]\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "35c7e3ce-bdbe-4861-ab69-73a9444a67c8",
+    "colId": "b5b73d05-34c9-4063-930c-732b20047057",
+    "containerId": "",
+    "name": "Remove Trade",
+    "url": "{{BASE_URL}}/trade/{{TRADE_ID}}",
+    "method": "DELETE",
+    "sortNum": 20000,
+    "created": "2022-07-20T07:09:31.889Z",
+    "modified": "2022-07-20T07:09:52.656Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer {{TOKEN}}"
+      }
+    ],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "35b1e081-94f2-416c-8547-9acaccdc0e69",
+    "colId": "10af7532-945f-4609-ba9d-fa428f57b814",
+    "containerId": "",
+    "name": "Find User By Id",
+    "url": "{{BASE_URL}}/user/{{USER_ID}}",
+    "method": "GET",
+    "sortNum": 15000,
+    "created": "2022-07-20T07:56:50.523Z",
+    "modified": "2022-07-20T07:57:15.024Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "935abcbe-bad3-41e3-8db6-7928858aec0d",
+    "colId": "2774e564-d8c1-4a40-8ed2-2b629eb487a6",
+    "containerId": "",
+    "name": "Find Books by User",
+    "url": "{{BASE_URL}}/user/{{USER_ID}}/book",
+    "method": "GET",
+    "sortNum": 25000,
+    "created": "2022-07-20T07:58:16.546Z",
+    "modified": "2022-07-20T07:58:45.389Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "00c5252e-13b3-49c9-a293-c6a6081ba7f8",
+    "colId": "b5b73d05-34c9-4063-930c-732b20047057",
+    "containerId": "",
+    "name": "Find Accepted Trade",
+    "url": "{{BASE_URL}}/trade",
+    "method": "GET",
+    "sortNum": 50000,
+    "created": "2022-07-26T07:01:42.893Z",
+    "modified": "2022-07-26T07:02:17.403Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  }
+]

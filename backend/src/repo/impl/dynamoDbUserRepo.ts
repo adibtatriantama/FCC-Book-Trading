@@ -1,100 +1,104 @@
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocument } from '@aws-sdk/lib-dynamodb';
+import { Model } from 'dynamodb-onetable';
 import { NOT_FOUND } from 'src/constant';
 import { Result } from 'src/core/result';
 import { User } from 'src/domain/user';
+import { onetable, UserType } from 'src/infra/db/onetable';
+import { UserMapper } from 'src/mapper/userMapper';
 import { UserRepo } from '../userRepo';
-import { DB_METADATA, DB_USER_PREFIX } from './constant';
-import { DbUserMapper } from './mapper/dbUserMapper';
-
-const ddbclient = new DynamoDBClient({
-  region: process.env.APP_REGION,
-});
-const ddbDoc = DynamoDBDocument.from(ddbclient, {
-  marshallOptions: { removeUndefinedValues: true },
-});
 
 export class DynamoDbUserRepo implements UserRepo {
+  private userModel: Model<UserType>;
+  private isDev: boolean;
+
+  constructor() {
+    this.userModel = onetable.getModel<UserType>('User');
+
+    this.isDev = process.env.NODE_ENV !== 'production';
+  }
+
   async findById(
     userId: string,
     options = { consistentRead: false },
   ): Promise<Result<User>> {
-    let getResult;
-
     try {
-      getResult = await ddbDoc.get({
-        TableName: process.env.TABLE_NAME,
-        Key: {
-          PK: `${DB_USER_PREFIX}${userId}`,
-          SK: DB_METADATA,
-        },
-        ConsistentRead: options.consistentRead,
-      });
+      const stats = this.isDev ? {} : undefined;
+
+      const result = await this.userModel.get(
+        { id: userId },
+        { consistent: options.consistentRead, stats },
+      );
+
+      if (stats) {
+        console.log(stats);
+      }
+
+      if (!result) {
+        return Result.fail(NOT_FOUND);
+      }
+
+      const user = UserMapper.toUser(result);
+
+      return Result.ok(user);
     } catch (error) {
       console.error(error);
-      return Result.fail('Unexpected Error');
+      return Result.fail('unexpected error');
     }
-
-    const item = getResult.Item;
-
-    if (!item) {
-      return Result.fail(NOT_FOUND);
-    }
-
-    const user = DbUserMapper.toEntity(item);
-
-    return Result.ok(user);
   }
 
   async batchFindById(
     userIds: string[],
     options = { consistentRead: false },
   ): Promise<Result<User[]>> {
-    if (userIds.length > 100) {
-      return Result.fail('Too many users');
-    }
-
-    const keys = userIds.map((userId) => ({
-      PK: `${DB_USER_PREFIX}${userId}`,
-      SK: DB_METADATA,
-    }));
-
     try {
-      const batchItemGetResult = await ddbDoc.batchGet({
-        RequestItems: {
-          [process.env.TABLE_NAME]: {
-            Keys: keys,
-            ConsistentRead: options.consistentRead,
-          },
-        },
-      });
+      const stats = this.isDev ? {} : undefined;
+      const users: User[] = [];
 
-      const items = batchItemGetResult.Responses[process.env.TABLE_NAME];
+      // Map Entries: Maximum number of 100 items. https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_BatchGetItem.html
+      for (let i = 0; i < userIds.length; i += 100) {
+        const userIdsSlice = userIds.slice(i, i + 100);
+        const batch = {};
 
-      if (!items) {
-        return Result.fail(NOT_FOUND);
+        for (const userId of userIdsSlice) {
+          await this.userModel.get({ id: userId }, { batch });
+        }
+
+        const result = await onetable.batchGet(batch, {
+          consistent: options.consistentRead,
+          stats,
+        });
+
+        if (stats) {
+          console.log(stats);
+        }
+
+        users.push(...(result as UserType[]).map(UserMapper.toUser));
       }
-
-      const users = items.map(DbUserMapper.toEntity);
 
       return Result.ok(users);
     } catch (error) {
       console.error(error);
-      return Result.fail('Unexpected Error');
+      return Result.fail('unexpected error');
     }
   }
 
   async save(user: User): Promise<Result<User>> {
     try {
-      await ddbDoc.put({
-        TableName: process.env.TABLE_NAME,
-        Item: DbUserMapper.toDbModel(user),
+      const stats = this.isDev ? {} : undefined;
+
+      const result = await this.userModel.create(UserMapper.toUserType(user), {
+        stats,
       });
+
+      if (stats) {
+        console.log(stats);
+      }
+
+      const createdUser = UserMapper.toUser(result);
+
+      return Result.ok(createdUser);
     } catch (error) {
       console.error(error);
-      return Result.fail('Unexpected Error');
+      return Result.fail('unexpected error');
     }
-
-    return Result.ok(user);
   }
 }
